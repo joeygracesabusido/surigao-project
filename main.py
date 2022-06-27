@@ -431,18 +431,21 @@ PASSWORD = StringVar()
 
 # ======================================LOGIN ============================================
 def Login(event=None):
+    from database_login import Database
+
+    Database.initialize()
+
+    
     if user_description.get() =="Admin":
-        if USERNAME.get == "" or PASSWORD.get() == "":
+        if USERNAME.get() == "" or PASSWORD.get() == "":
                 lbl_result.config(text="Please complete the required field!", fg="red")
         else:
             cursor.execute("SELECT * FROM admin_login WHERE username = %s AND password_admin = %s  AND admin_status = 'approved'",
                            (USERNAME.get(), PASSWORD.get()))
+            # data = Database.login_credentials(USERNAME.get(),PASSWORD.get())
+
             if cursor.fetchone() is not None:
-                # cursor.execute("SELECT * FROM admin_login WHERE username = %s AND password_login = %s, \
-                #                AND admin_status = 'approved'"
-                #                (USERNAME.get(), PASSWORD.get()))
-                # data = cursor.fetchone()
-                # admin_id = data[0]
+               
 
                 PASSWORD.set("")
                 lbl_result.config(text="")
