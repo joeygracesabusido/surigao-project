@@ -18,15 +18,16 @@ class Database(object):
         cursor = Database.DATABASE.cursor()
 
     @staticmethod
-    def login_credentials(table,username,password):
+    def login_credentials(username,password):
         """
         This is for admin selection
         Data base
         """
-        data = ('SELECT * FROM   '+table+' \
-                 WHERE username = "'+username+'"   and admin_status = "approved" AND password_admin =  "'+password+'"')
+        data = ('SELECT * FROM admin_login   \
+                 WHERE username = %s   and admin_status = "approved" AND password_admin = %s')
+        val =(username,password)
                           
-        cursor.execute(data)
+        cursor.execute(data,val)
         return cursor.fetchone()
 
     @staticmethod
@@ -40,41 +41,40 @@ class Database(object):
                           
         cursor.execute(data)
         return cursor.fetchall()
-    # @staticmethod  
-    # def test_insert(table,username,password,admin_status):
-    #     """
-    #     This function is 
-    #     to insert data to admin login
-    #     """
-    #     data = ('SELECT * FROM   '+table+' \
-    #              WHERE username = "'+username+'"   and admin_status = "'+admin_status+'" AND password_admin =  "'+password+'"')
-                          
-    #     cursor.execute(data)
-        # Database.DATABASE.commit()   
-        # 
-
-    
-    
+   
 
     @staticmethod
-    def test_insert(username,password_admin,admin_status):
+    def test_insert(fullname,username,password_admin,admin_status):
         """
         This function is 
         to insert data to admin login
         """
         try:
-            # data = ('INSERT INTO  admin_login (username ="'+username+'", \
-            #                               password_admin"'+password_admin+'",\
-            #                                  admin_status="'+admin_status+'")')
-                    
-            # data = 'INSERT INTO  admin_login (username,password_admin,admin_status) VALUES(%s, %s, %s)'
-            # val = [('"'+username+'", "'+password_admin+'", "'+admin_status+'"' )]   
-
-            data = 'INSERT INTO  admin_login (username,password_admin,admin_status) VALUES(%s, %s,%s)',\
-                ('"'+username+'", "'+password_admin+'", "'+admin_status+'"' )    
+           
+            data = ( "INSERT INTO admin_login (fullname,username,password_admin,admin_status)"
+                    "VALUES(%s,%s,%s,%s)")
+            val = (fullname,username,password_admin,admin_status)
             #                  
-            cursor.execute(data)              
-            # cursor.execute(data,val) 
+            # cursor.execute(data)              
+            cursor.execute(data,val) 
             Database.DATABASE.commit()
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+
+    @staticmethod
+    def delete_user(table,id):
+        """
+        This function is 
+        to insert data to admin login
+        """
+        try:
+            
+            data = ('DELETE  FROM   '+table+' \
+                WHERE id = "'+id+'"')       
+            #                  
+            # cursor.execute(data)              
+            cursor.execute(data) 
+            Database.DATABASE.commit()
+            return ("Data has been deleted")
         except Exception as ex:
             print("Error", f"Error due to :{str(ex)}")

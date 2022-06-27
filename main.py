@@ -68,7 +68,7 @@ root.config(bg="cyan")
 
 #load = Image.open("image\login.png").convert("RGB")
 load = PIL.Image.open("image\login.png")
-load =load.resize((150, 125), PIL.Image.Resampling.LANCZOS)
+load =load.resize((150, 125), PIL.Image.ANTIALIAS)
 logo_icon = ImageTk.PhotoImage(load)
 
 #==============================================Cost Analysis Frame ================================================
@@ -440,11 +440,12 @@ def Login(event=None):
         if USERNAME.get() == "" or PASSWORD.get() == "":
                 lbl_result.config(text="Please complete the required field!", fg="red")
         else:
-            cursor.execute("SELECT * FROM admin_login WHERE username = %s AND password_admin = %s  AND admin_status = 'approved'",
-                           (USERNAME.get(), PASSWORD.get()))
-            # data = Database.login_credentials(USERNAME.get(),PASSWORD.get())
+            # cursor.execute("SELECT * FROM admin_login WHERE username = %s AND password_admin = %s  AND admin_status = 'approved'",
+            #                (USERNAME.get(), PASSWORD.get()))
+            data = Database.login_credentials(USERNAME.get(),PASSWORD.get())
 
-            if cursor.fetchone() is not None:
+            # if cursor.fetchone() is not None:
+            if data is not None:
                
 
                 PASSWORD.set("")

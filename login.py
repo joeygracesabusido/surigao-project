@@ -9,38 +9,58 @@ Database.initialize()
 def test():
     username ='joeysabusido'
     password = 'genesis@11'
-    table='admin_login'
-    data = Database.login_credentials(table=table,username=username,password=password)
+    # table='admin_login'
+    data = Database.login_credentials(username=username,password=password)
 
     for i in data:
         print(i)
 
-@staticmethod
-def test2():
-    table='admin_login'
+
+
+def test2(test):
+        table='admin_login'
     
-    data = Database.login_credentials2(table=table)
+        data = Database.login_credentials2(table=table)
 
-    for i in data:
-        print(i)
+        user = []
+        for i in data:
+            user.append(i[2])
+
+        print(test if test in user else 'not in user')
+
+
 
 
 
 @staticmethod
 def insertLogin():
     table = 'admin_login'
+    fullname = input("Enter fullname :") 
     username = input("Enter Username :") 
     password = input('enter password: ')
     status = input('Enter Status approval:')
 
     
 
-    data =Login(username, password, status)
+    data =Login(fullname,username, password, status)
     data.test_insert()
-    
+
     
 
-insertLogin()
+@staticmethod
+def deleteUser():
+    
+    table = 'admin_login'
+    id = input("Enter ID :") 
 
-# test2()
+    data =Database.delete_user(table=table,id=id)
+    
+    
+    
+# deleteUser()
+# insertLogin()
+
+test2('joeysabusido')
+
+# test()
     
