@@ -1,7 +1,7 @@
 from database_login import Database
 from insert_login import Login
 # from insert_login import Login
-
+from equipment_database import Database
 Database.initialize()
 
 
@@ -54,13 +54,48 @@ def deleteUser():
     id = input("Enter ID :") 
 
     data =Database.delete_user(table=table,id=id)
+
+
+@staticmethod
+def equipmentList(): 
+    table = 'equipment'
     
+    data = Database.select_all_equipment(table=table)
+
+    print(data)
+    # cnt = 0
+    # for row in myresult:
+    #     cnt+=1
+    #     equipmentID = row[1]
+    #     chases_number = row[3]
+    #     plate_number = row[4]   
+    #     print(row)
+
+@staticmethod
+
+def select_one(): 
+    id = 1
+    equipmentid = input('Enter Equipment ID: ')
     
+    data = Database.selectEquipment(equipmentID=equipmentid)
+
+    print(data)
+
+@staticmethod
+def delete_equipment():
     
+    table = 'equipment'
+    id = input("Enter ID :") 
+
+    data =Database.delete_equipment(table=table,id=id)
+
+delete_equipment()
+# select_one()
+# equipmentList()    
 # deleteUser()
 # insertLogin()
 
-test2('joeysabusido')
+# test2('joeysabusido')
 
 # test()
     

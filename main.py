@@ -39,6 +39,8 @@ try:
 except Exception as ex:
     print("Error", f"Error due to :{str(ex)}")
 
+
+
 # this is to insert admin log in 
 
 # try:
@@ -72,7 +74,69 @@ load =load.resize((150, 125), PIL.Image.ANTIALIAS)
 logo_icon = ImageTk.PhotoImage(load)
 
 #==============================================Cost Analysis Frame ================================================
+def equipment_listTreeview_frame():
+    """This function is to display treeview withou duplication of data"""
+
+    equipmentList_treeview.delete(*equipmentList_treeview.get_children())
+    return equipment_listTreeview()
+
+def equipment_listTreeview():
+    """
+    This function is for
+    list of equipment Data
+    """
+    table = 'equipment'
+    from equipment_database import Database
+    Database.initialize()
+
+    myresult = Database.select_all_equipment(table=table)
+    cnt = 0
+    for row in myresult:
+        cnt+=1
+        transID = row[0]
+        equipmentID = row[1]
+        chases_number = row[4]
+        plate_number = row[5]
+       
+               
+        equipmentList_treeview.insert('', 'end', values=(cnt,transID,equipmentID,
+                                plate_number , chases_number ))
+
 def insert_equipment():
+    """
+    This function is for
+    inserting data to equipment table
+    """
+    from equipment_database import Database
+    Database.initialize()
+    from equipment_transaction import Equipment
+    equipID = euipment_id.get()
+    equipment_name = equipment_name_registry_entry.get()
+    purchase_amount = amount_purchase_registry_entry.get()
+    chases_number = chasis_number_entry.get()
+    plate_number = plate_number_entry.get()
+    date_purchase = datePurchase_entry.get()
+
+    data = Database.selectEquipment(equipID)
+
+    if data is not None:
+        messagebox.showinfo('JRS','Equipment ID is already Taken')
+    else:
+        if equipID =='' or equipment_name=='' or purchase_amount=='' \
+            or chases_number==''or plate_number=="" or date_purchase =="":
+            messagebox.showinfo('Please fill up  blank entry field/s ')
+        else:
+            data2 = Equipment(equipID,equipment_name,
+                    purchase_amount,chases_number,plate_number,
+                    date_purchase)
+            data2.equipment_insert()
+            messagebox.showinfo('JRS','Data has been save')
+            equipment_listTreeview_frame()
+
+
+
+
+def insert_equipment_frame():
     """
     This function is for
     inserting equipment
@@ -84,7 +148,7 @@ def insert_equipment():
     trans_label = Label(equipment_registry_frame, text='Equipment Registration',
                         width=35, height=1, bg='pink', fg='black',
                           font=('Arial', 13), anchor='center')
-    trans_label.place(x=330, y=3)
+    trans_label.place(x=370, y=3)
 
     equipmentID_label = Label(equipment_registry_frame, text='Equipment ID:', width=15, height=1, bg='yellow', fg='black',
                           font=('Arial', 10), anchor='e')
@@ -99,7 +163,7 @@ def insert_equipment():
     equipment_name_registry_lbl.place(x=10, y=55)
 
     global equipment_name_registry_entry
-    equipment_name_registry_entry = Entry(equipment_registry_frame, width=15, font=('Arial', 12))
+    equipment_name_registry_entry = Entry(equipment_registry_frame, width=25, font=('Arial', 10))
     equipment_name_registry_entry.place(x=150, y=55)
 
     add_reg_label = Label(equipment_registry_frame, text='Amount Purchase:', width=15, height=1, bg='yellow', fg='black',
@@ -107,7 +171,7 @@ def insert_equipment():
     add_reg_label.place(x=10, y=80)
 
     global amount_purchase_registry_entry
-    amount_purchase_registry_entry = Entry(equipment_registry_frame, width=15, font=('Arial', 12))
+    amount_purchase_registry_entry = Entry(equipment_registry_frame, width=15, font=('Arial', 10))
     amount_purchase_registry_entry.place(x=150, y=80)
 
     # global add_reg_entry
@@ -123,9 +187,9 @@ def insert_equipment():
     bdate_label = Label(equipment_registry_frame, text='Date Purchase:', width=15, height=1, bg='yellow', fg='black',
                           font=('Arial', 10), anchor='e')
     bdate_label.place(x=10, y=110)
-    global bday_reg
+    global datePurchase_entry
     datePurchase_entry = DateEntry(equipment_registry_frame, width=15, background='darkblue', date_pattern='yyyy-MM-dd',
-                                  foreground='white', borderwidth=2, padx=10, pady=10,font=('Arial', 12))
+                                  foreground='white', borderwidth=2, padx=10, pady=10,font=('Arial', 10))
     datePurchase_entry.place(x=150, y=110)
     datePurchase_entry.configure(justify='center')
     # bday_reg.bind("<<DateEntrySelected>>", calculate_bday)
@@ -135,62 +199,72 @@ def insert_equipment():
     chasis_number_lbl.place(x=10, y=140)
 
     global chasis_number_entry
-    chasis_number_entry = Entry(equipment_registry_frame, width=15, font=('Arial', 12))
+    chasis_number_entry = Entry(equipment_registry_frame, width=15, font=('Arial', 10))
     chasis_number_entry.place(x=150, y=140)
 
+
+    plate_number_lbl = Label(equipment_registry_frame, text='Plate No.:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+    plate_number_lbl.place(x=10, y=170)
+
+    global plate_number_entry
+    plate_number_entry = Entry(equipment_registry_frame, width=15, font=('Arial', 10))
+    plate_number_entry.place(x=150, y=170)
+
     
 
-    btn_save = Button(equipment_registry_frame, text='Search', bd=2, bg='yellow green', fg='black',
-                              font=('arial', 10), width=10, height=1,)
-    btn_save.place(x=10, y=180)
+    btn_save = Button(equipment_registry_frame, text='Save', bd=2, bg='blue', fg='black',
+                              font=('arial', 10), width=10, height=1,command=insert_equipment)
+    btn_save.place(x=10, y=210)
     
     
     
 
 
-    memberslist_view_Form = Frame(equipment_registry_frame, width=500, height=10)
-    memberslist_view_Form.place(x=330, y=30)
+    equipmentlist_view_Form = Frame(equipment_registry_frame, width=500, height=10)
+    equipmentlist_view_Form.place(x=370, y=30)
 
     style = ttk.Style(equipment_registry_frame)
     style.theme_use("clam")
     style.configure("Treeview",
-                    background="black",
-                    foreground="white",
+                    background="white",
+                    foreground="black",
                     rowheight=15,
                     fieldbackground="yellow")
    
     
     
-    global membersList_treeview
-    scrollbarx = Scrollbar(memberslist_view_Form, orient=HORIZONTAL)
-    scrollbary = Scrollbar(memberslist_view_Form, orient=VERTICAL)
+    global equipmentList_treeview
+    scrollbarx = Scrollbar(equipmentlist_view_Form, orient=HORIZONTAL)
+    scrollbary = Scrollbar(equipmentlist_view_Form, orient=VERTICAL)
     
-    membersList_treeview = ttk.Treeview(memberslist_view_Form,
-                                             columns=('Count','ID','LNAME', "FNAME","MINISTRY",
-                                              'CONTACT'),
+    equipmentList_treeview = ttk.Treeview(equipmentlist_view_Form,
+                                             columns=('Count','Trans ID','ID','PLATE NO', "CHASES NO"
+                                              ),
                                              selectmode="extended", height=20, yscrollcommand=scrollbary.set,
                                              xscrollcommand=scrollbarx.set)
-    scrollbary.config(command=membersList_treeview.yview)
+    scrollbary.config(command=equipmentList_treeview.yview)
     scrollbary.pack(side=RIGHT, fill=Y)
-    scrollbarx.config(command=membersList_treeview.xview)
+    scrollbarx.config(command=equipmentList_treeview.xview)
     scrollbarx.pack(side=BOTTOM, fill=X)
-    membersList_treeview.heading('Count', text="Count", anchor=CENTER)
-    membersList_treeview.heading('ID', text="ID", anchor=CENTER)
-    membersList_treeview.heading('LNAME', text="Last Name", anchor=CENTER)
-    membersList_treeview.heading('FNAME', text="First Name", anchor=CENTER)
-    membersList_treeview.heading('MINISTRY', text="Ministry", anchor=CENTER)
-    membersList_treeview.heading('CONTACT', text="Contact No.", anchor=CENTER)
+    equipmentList_treeview.heading('Count', text="Count", anchor=CENTER)
+    equipmentList_treeview.heading('Trans ID', text="Trans ID", anchor=CENTER)
+    equipmentList_treeview.heading('ID', text="ID", anchor=CENTER)
+    equipmentList_treeview.heading('PLATE NO', text="PLATE NO.", anchor=CENTER)
+    equipmentList_treeview.heading('CHASES NO', text="CHASES NO.", anchor=CENTER)
+   
 
 
-    membersList_treeview.column('#0', stretch=NO, minwidth=0, width=0, anchor='e')
-    membersList_treeview.column('#1', stretch=NO, minwidth=0, width=70, anchor='e')
-    membersList_treeview.column('#2', stretch=NO, minwidth=0, width=100, anchor='e')
-    membersList_treeview.column('#3', stretch=NO, minwidth=0, width=100, anchor='e')
-    membersList_treeview.column('#4', stretch=NO, minwidth=0, width=100, anchor='e')
-    membersList_treeview.column('#5', stretch=NO, minwidth=0, width=100, anchor='e')
-    membersList_treeview.column('#6', stretch=NO, minwidth=0, width=100, anchor='e')
+    equipmentList_treeview.column('#0', stretch=NO, minwidth=0, width=0, anchor='e')
+    equipmentList_treeview.column('#1', stretch=NO, minwidth=0, width=100, anchor='e')
+    equipmentList_treeview.column('#2', stretch=NO, minwidth=0, width=100, anchor='e')
+    equipmentList_treeview.column('#3', stretch=NO, minwidth=0, width=100, anchor='e')
+    equipmentList_treeview.column('#4', stretch=NO, minwidth=0, width=100, anchor='e')
+    equipmentList_treeview.column('#5', stretch=NO, minwidth=0, width=100, anchor='e')
+   
 
-    membersList_treeview.pack()
+    equipmentList_treeview.pack()
+    equipment_listTreeview_frame()
   
 
 
@@ -353,7 +427,7 @@ def dashboard():
     filemenu4.add_command(label="Accounting Module")
     filemenu5.add_command(label="Reports Module")
 
-    filemenu6.add_command(label="Equipment Module", command=insert_equipment)
+    filemenu6.add_command(label="Equipment Module", command=insert_equipment_frame)
     
     #filemenu7.add_command(label="New Payroll", command = payroll_transactions)
     menubar.add_cascade(label="Account", menu=filemenu)
