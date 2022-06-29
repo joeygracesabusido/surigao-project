@@ -78,111 +78,80 @@ def insert_equipment():
     inserting equipment
     """
 
-    members_data_frame = Frame(MidViewForm9, width=400, height=500, bd=2, bg='gray', relief=SOLID)
-    members_data_frame.place(x=200, y=8)
+    equipment_registry_frame = Frame(MidViewForm9, width=1100, height=500, bd=2, bg='gray', relief=SOLID)
+    equipment_registry_frame.place(x=170, y=8)
     
-    trans_label = Label(members_data_frame, text='Inserting Church Member',
+    trans_label = Label(equipment_registry_frame, text='Equipment Registration',
                         width=35, height=1, bg='pink', fg='black',
                           font=('Arial', 13), anchor='center')
-    trans_label.place(x=230, y=3)
+    trans_label.place(x=330, y=3)
 
-    l_name_reg_label = Label(members_data_frame, text='Last Name:', width=10, height=1, bg='yellow', fg='black',
+    equipmentID_label = Label(equipment_registry_frame, text='Equipment ID:', width=15, height=1, bg='yellow', fg='black',
                           font=('Arial', 10), anchor='e')
-    l_name_reg_label.place(x=10, y=30)
+    equipmentID_label.place(x=10, y=30)
 
-    global last_name_member_reg
-    last_name_member_reg = Entry(members_data_frame, width=15, font=('Arial', 12))
-    #userName_entry.insert(0, u'enter username')
-    last_name_member_reg.place(x=110, y=30)
+    global euipment_id
+    euipment_id = Entry(equipment_registry_frame, width=15, font=('Arial', 12))
+    euipment_id.place(x=150, y=30)
 
-    f_name_reg_label = Label(members_data_frame, text='First Name:', width=10, height=1, bg='yellow', fg='black',
+    equipment_name_registry_lbl = Label(equipment_registry_frame, text='Equipment:', width=15, height=1, bg='yellow', fg='black',
                           font=('Arial', 10), anchor='e')
-    f_name_reg_label.place(x=10, y=55)
+    equipment_name_registry_lbl.place(x=10, y=55)
 
-    global first_name_member_reg
-    first_name_member_reg = Entry(members_data_frame, width=15, font=('Arial', 12))
-    #userName_entry.insert(0, u'enter username')
-    first_name_member_reg.place(x=110, y=55)
+    global equipment_name_registry_entry
+    equipment_name_registry_entry = Entry(equipment_registry_frame, width=15, font=('Arial', 12))
+    equipment_name_registry_entry.place(x=150, y=55)
 
-    add_reg_label = Label(members_data_frame, text='Address:', width=10, height=1, bg='yellow', fg='black',
+    add_reg_label = Label(equipment_registry_frame, text='Amount Purchase:', width=15, height=1, bg='yellow', fg='black',
                           font=('Arial', 10), anchor='e')
     add_reg_label.place(x=10, y=80)
 
-    global add_reg_entry
-    add_reg_entry = scrolledtext.ScrolledText(members_data_frame,
-                                                          wrap=tk.WORD,
-                                                          width=20,
-                                                          height=3,
-                                                          font=("Arial",
-                                                                10))
-    add_reg_entry.place(x=110, y=80)
+    global amount_purchase_registry_entry
+    amount_purchase_registry_entry = Entry(equipment_registry_frame, width=15, font=('Arial', 12))
+    amount_purchase_registry_entry.place(x=150, y=80)
+
+    # global add_reg_entry
+    # add_reg_entry = scrolledtext.ScrolledText(members_data_frame,
+    #                                                       wrap=tk.WORD,
+    #                                                       width=20,
+    #                                                       height=3,
+    #                                                       font=("Arial",
+    #                                                             10))
+    # add_reg_entry.place(x=110, y=80)
 
    
-    bdate_label = Label(members_data_frame, text='Birth Day:', width=10, height=1, bg='yellow', fg='black',
+    bdate_label = Label(equipment_registry_frame, text='Date Purchase:', width=15, height=1, bg='yellow', fg='black',
                           font=('Arial', 10), anchor='e')
-    bdate_label.place(x=10, y=138)
+    bdate_label.place(x=10, y=110)
     global bday_reg
-    bday_reg = DateEntry(members_data_frame, width=15, background='darkblue', date_pattern='yyyy-MM-dd',
+    datePurchase_entry = DateEntry(equipment_registry_frame, width=15, background='darkblue', date_pattern='yyyy-MM-dd',
                                   foreground='white', borderwidth=2, padx=10, pady=10,font=('Arial', 12))
-    bday_reg.place(x=110, y=138)
-    bday_reg.configure(justify='center')
+    datePurchase_entry.place(x=150, y=110)
+    datePurchase_entry.configure(justify='center')
     # bday_reg.bind("<<DateEntrySelected>>", calculate_bday)
 
-    age_reg_label = Label(members_data_frame, text='Age:', width=10, height=1, bg='yellow', fg='black',
+    chasis_number_lbl = Label(equipment_registry_frame, text='Chasis No.:', width=15, height=1, bg='yellow', fg='black',
                           font=('Arial', 10), anchor='e')
-    age_reg_label.place(x=10, y=163)
+    chasis_number_lbl.place(x=10, y=140)
 
-    global age_member_reg
-    age_member_reg = Entry(members_data_frame, width=15, font=('Arial', 12))
-    age_member_reg.place(x=110, y=163)
+    global chasis_number_entry
+    chasis_number_entry = Entry(equipment_registry_frame, width=15, font=('Arial', 12))
+    chasis_number_entry.place(x=150, y=140)
 
-    age_reg_label = Label(members_data_frame, text='Ministry:', width=10, height=1, bg='yellow', fg='black',
-                          font=('Arial', 10), anchor='e')
-    age_reg_label.place(x=10, y=188)
+    
 
-    global ministry_reg_entry
-    ministry_reg_entry = ttk.Combobox(members_data_frame, width=20,font=('Arial', 12))
-    ministry_reg_entry['values'] = 'Test'
-    ministry_reg_entry.place(x=110, y=188)
-
-    contact_reg_label = Label(members_data_frame, text='Contact No:', width=10, height=1, bg='yellow', fg='black',
-                          font=('Arial', 10), anchor='e')
-    contact_reg_label.place(x=10, y=213)
-
-    global contact_member_reg
-    contact_member_reg = Entry(members_data_frame, width=15, font=('Arial', 12))
-    contact_member_reg.place(x=110, y=213)
-
-    search_input_mReg_label = Label(members_data_frame, text='Search ID :', width=10, height=1, bg='yellow', fg='black',
-                          font=('Arial', 10), anchor='e')
-    search_input_mReg_label.place(x=10, y=300)
-
-    global search_input_mReg_entry
-    search_input_mReg_entry = Entry(members_data_frame, width=15, font=('Arial', 12))
-    search_input_mReg_entry.place(x=110, y=300)
-
-    btn_search_mr = Button(members_data_frame, text='Search', bd=2, bg='yellow green', fg='black',
-                              font=('arial', 10), width=10, height=1)
-    btn_search_mr.place(x=240, y=300)
+    btn_save = Button(equipment_registry_frame, text='Search', bd=2, bg='yellow green', fg='black',
+                              font=('arial', 10), width=10, height=1,)
+    btn_save.place(x=10, y=180)
     
     
-    btn_save = Button(members_data_frame, text='Save', bd=2, bg='green', fg='white',
-                              font=('arial', 10), width=10, height=1)
-    btn_save.place(x=10, y=243)
-
-    btn_update = Button(members_data_frame, text='Update', bd=2, bg='blue', fg='white',
-                              font=('arial', 10), width=10, height=1)
-    btn_update.place(x=110, y=243)
-
-    btn_delete = Button(members_data_frame, text='Delete', bd=2, bg='red', fg='white',
-                              font=('arial', 10), width=10, height=1)
-    btn_delete.place(x=210, y=243)
+    
 
 
-    memberslist_view_Form = Frame(members_data_frame, width=500, height=10)
+    memberslist_view_Form = Frame(equipment_registry_frame, width=500, height=10)
     memberslist_view_Form.place(x=330, y=30)
 
-    style = ttk.Style(members_data_frame)
+    style = ttk.Style(equipment_registry_frame)
     style.theme_use("clam")
     style.configure("Treeview",
                     background="black",
