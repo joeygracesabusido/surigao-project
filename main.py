@@ -74,6 +74,72 @@ load =load.resize((150, 125), PIL.Image.ANTIALIAS)
 logo_icon = ImageTk.PhotoImage(load)
 
 #==============================================Cost Analysis Frame ================================================
+def update_equipment() -> None:
+    """
+    This function is to update Equipment
+    """
+    from equipment_database import Database
+    Database.initialize()
+
+    transID =TransID_euipment_entry.get()
+    equipID = euipment_id.get()
+    equipment_name = equipment_name_registry_entry.get()
+    purchase_amount = amount_purchase_registry_entry.get()
+    chases_number = chasis_number_entry.get()
+    plate_number = plate_number_entry.get()
+    date_purchase = datePurchase_entry.get()
+
+    if transID == "":
+
+        messagebox.showinfo('JRS','No Transaction ID has been Selected')
+
+    else:
+        data = Database.update_one_equipment(equipID,equipment_name,purchase_amount,
+                                        chases_number,plate_number,date_purchase,transID)
+
+        if data == []:
+            messagebox.showinfo('JRS','Error')
+        else:
+            messagebox.showinfo('JRS','Data has been update')
+def search_one_equipment():
+    """
+    this function is for searching equipment by using transaction ID
+    """
+    from equipment_database import Database
+    Database.initialize()
+
+    myresult = Database.select_one_equipment(id=TransID_euipment_entry.get())
+    
+    if myresult == []:
+        messagebox.showinfo('JRS','Trans ID selected does not exist')
+    for i in myresult:
+        transID = i[0]
+        equipID =i[1]
+        equipName = i[2]
+        purchasePrice = i[3]
+        chases_number = i[4]
+        plate_number = i[5]
+        date_purchase = i[6]
+
+        euipment_id.delete(0, END)
+        euipment_id.insert(0, (equipID))
+
+        equipment_name_registry_entry.delete(0, END)
+        equipment_name_registry_entry.insert(0, (equipName))
+
+        amount_purchase_registry_entry.delete(0, END)
+        amount_purchase_registry_entry.insert(0, (purchasePrice))
+
+        chasis_number_entry.delete(0, END)
+        chasis_number_entry.insert(0, (chases_number))
+
+        plate_number_entry.delete(0, END)
+        plate_number_entry.insert(0, (plate_number))
+
+        datePurchase_entry.delete(0, END)
+        datePurchase_entry.insert(0, (date_purchase))
+            
+
 def equipment_listTreeview_frame():
     """This function is to display treeview withou duplication of data"""
 
@@ -90,6 +156,7 @@ def equipment_listTreeview():
     Database.initialize()
 
     myresult = Database.select_all_equipment(table=table)
+    
     cnt = 0
     for row in myresult:
         cnt+=1
@@ -213,12 +280,27 @@ def insert_equipment_frame():
 
     
 
-    btn_save = Button(equipment_registry_frame, text='Save', bd=2, bg='blue', fg='black',
+    btn_save = Button(equipment_registry_frame, text='Save', bd=2, bg='blue', fg='white',
                               font=('arial', 10), width=10, height=1,command=insert_equipment)
     btn_save.place(x=10, y=210)
+
+    btn_update = Button(equipment_registry_frame, text='Update', bd=2, bg='yellow', fg='black',
+                              font=('arial', 10), width=10, height=1,command=update_equipment)
+    btn_update.place(x=110, y=210)
+
+    # this portion is for Searching function  using Trans ID
+    transID_lbl = Label(equipment_registry_frame, text='Trans ID:', width=10, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+    transID_lbl.place(x=10, y=280)
+
+    global TransID_euipment_entry
+    TransID_euipment_entry = Entry(equipment_registry_frame, width=15, font=('Arial', 10))
+    TransID_euipment_entry.place(x=150, y=280)
     
     
-    
+    btn_search = Button(equipment_registry_frame, text='Search', bd=2, bg='green', fg='white',
+                              font=('arial', 10), width=10, height=1,command=search_one_equipment)
+    btn_search.place(x=280, y=280)
 
 
     equipmentlist_view_Form = Frame(equipment_registry_frame, width=500, height=10)

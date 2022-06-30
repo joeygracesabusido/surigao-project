@@ -106,3 +106,35 @@ class Database(object):
         except Exception as ex:
             print("Error", f"Error due to :{str(ex)}")
 
+    @staticmethod
+    def select_one_equipment(id):
+        """
+        This function is for querying with parameters of ID
+        """
+        try:
+            data = ('SELECT * FROM equipment \
+                WHERE id = "'+id+'"')
+
+            cursor.execute(data)
+            return cursor.fetchall()
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+
+    @staticmethod
+    def update_one_equipment(equipmentID,equipment_name,
+                            purchase_price,chases_number,
+                            plate_number,date_purchase,id):
+        """
+        This function is to update Equipment with parameters of Trans ID
+        """
+        try:
+            data = ('UPDATE equipment SET equipment_id=%s,\
+                    equipment_name=%s,purchase_price=%s, \
+                     chases_number=%s,plate_number=%s,date_purchase=%s  \
+                        WHERE id = %s')
+            val =(equipmentID,equipment_name,purchase_price,chases_number,
+                    plate_number,date_purchase,id)
+            cursor.execute(data,val)
+            Database.DATABASE.commit()
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
