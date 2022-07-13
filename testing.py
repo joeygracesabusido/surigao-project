@@ -13,7 +13,7 @@ cursor = mydb.cursor()
 try:
     cursor.execute(
                     "CREATE TABLE IF NOT EXISTS inventory (id INT AUTO_INCREMENT PRIMARY KEY,\
-                            store_id VARCHAR(100),\
+                            date DATE,\
                                 product_id VARCHAR(100), \
                                     quantity_inv DECIMAL(9,2)) \
                                         ")
@@ -24,7 +24,7 @@ except Exception as ex:
 try:
     cursor.execute(
                     "CREATE TABLE IF NOT EXISTS sales (id INT AUTO_INCREMENT PRIMARY KEY,\
-                            store_id VARCHAR(100),\
+                            date DATE,\
                                 product_id VARCHAR(100), \
                                     sales_inv DECIMAL(9,2))\
                                         ")
@@ -58,17 +58,17 @@ def insert_inventory():
     mydb._open_connection()
     cursor = mydb.cursor()
     
-    store_id = input("Enter Store ID: ")
+    date = input("Enter Date: ")
     product_id = input("Enter Product ID: ")
     quantity_inv = input('Enter quantity: ')
 
     try:
-        cursor.execute("INSERT INTO inventory (store_id,"
+        cursor.execute("INSERT INTO inventory (date,"
                            "product_id,quantity_inv)"
                            
                            " VALUES(%s, %s, %s)",
 
-                           (store_id, product_id, quantity_inv))
+                           (date, product_id, quantity_inv))
 
         mydb.commit()
         mydb.close()
@@ -82,17 +82,17 @@ def insert_sale():
     mydb._open_connection()
     cursor = mydb.cursor()
     
-    store_id = input("Enter Store ID: ")
+    date = input("Enter Date : ")
     product_id = input("Enter Product ID: ")
     quantity_inv = input('Enter Sales: ')
 
     try:
-        cursor.execute("INSERT INTO sales (store_id,"
+        cursor.execute("INSERT INTO sales (date,"
                            "product_id,sales_inv)"
                            
                            " VALUES(%s, %s, %s)",
 
-                           (store_id, product_id, quantity_inv))
+                           (date, product_id, quantity_inv))
 
         mydb.commit()
         mydb.close()
@@ -108,12 +108,12 @@ def reportInventory():
     mydb._open_connection()
     cursor = mydb.cursor()
 
-    cursor.execute("SELECT I.store_id, I.product_id, I.quantity_inv, S.sales_inv, (sum(I.quantity_inv) - sum(S.sales_inv)) AS remaining \
-                    FROM sales S INNER JOIN inventory I \
-                    ON I.store_id = S.store_id \
-                    AND I.product_id = S.product_id \
-                    GROUP BY I.store_id,I.quantity_inv,S.sales_inv,I.product_id,S.product_id\
-                    ")
+    # cursor.execute("SELECT I.store_id, I.product_id, I.quantity_inv, S.sales_inv, (sum(I.quantity_inv) - sum(S.sales_inv)) AS remaining \
+    #                 FROM sales S INNER JOIN inventory I \
+    #                 ON I.store_id = S.store_id \
+    #                 AND I.product_id = S.product_id \
+    #                 GROUP BY I.store_id,I.quantity_inv,S.sales_inv,I.product_id,S.product_id\
+    #                 ")
     # cursor.execute("SELECT \
     #                     I.store_id \
     #                     , I.product_id \
@@ -137,10 +137,24 @@ def reportInventory():
     #                     I.store_id \
     #                     , I.product_id")
 
+    cursor.execute ("select inventory.date, inventory.product_id, \
+            (sum(inventory.quantity_inv)-sum(sales.sales_inv) ) as Balance\
+            from inventory \
+            join sales on sales.product_id = inventory.product_id \
+            group by  inventory.product_id, inventory.date")
+
     myresult = cursor.fetchall()
 
-    print(tabulate(myresult, headers =['Store','Product ID','Quantity Inv',
-                                    'Sales Inv.','Remaining Bal.'], tablefmt='psql'))
+    print(tabulate(myresult, headers =['Date','Product ID','Balance'], tablefmt='psql'))
     selection()
+
+def inventoryTest():
+    """
+    This is for querying inventory Balance
+    this is trial only
+    """
+    mydb._open_connection()
+    cursor = mydb.cursor()
+
 
 selection()
