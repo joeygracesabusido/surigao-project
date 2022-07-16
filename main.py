@@ -193,10 +193,18 @@ def insert_equipment():
             or chases_number==''or plate_number=="" or date_purchase =="":
             messagebox.showinfo('Please fill up  blank entry field/s ')
         else:
-            data2 = Equipment(equipID,equipment_name,
-                    purchase_amount,chases_number,plate_number,
-                    date_purchase)
+            # data2 = Equipment(equipID,equipment_name,
+            #         purchase_amount,chases_number,plate_number,
+            #         date_purchase)
+            # data2.equipment_insert()
+            
+            data2 = Equipment(equipmentID = equipID, equipment_name=equipment_name,
+                        purchase_price=purchase_amount,
+                        chases_number=chases_number,
+                        plate_number = plate_number,
+                        date_purchase=date_purchase)
             data2.equipment_insert()
+
             messagebox.showinfo('JRS','Data has been save')
             equipment_listTreeview_frame()
 

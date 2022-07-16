@@ -28,6 +28,9 @@ class Database(object):
                                                 date_purchase date DEFAULT NULL)")
         except Exception as ex:
             print("Error", f"Error due to :{str(ex)}")
+        finally:
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
 
     @staticmethod
     def insert_equipment(equipmentID,equipment_name,
@@ -37,7 +40,7 @@ class Database(object):
         this function is to insert
         equipment in 
         """ 
-
+        Database.DATABASE._open_connection()
         try:
            
             data = ( "INSERT INTO equipment (equipment_id,equipment_name,\
@@ -48,9 +51,13 @@ class Database(object):
             #                  
             # cursor.execute(data)              
             cursor.execute(data,val) 
-            Database.DATABASE.commit()
+           
         except Exception as ex:
             print("Error", f"Error due to :{str(ex)}")
+        finally:
+
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
 
     @staticmethod
     def selectEquipment(equipmentID):
@@ -59,7 +66,7 @@ class Database(object):
         equipment with parameters of equipment
         so that it will not duplicate Number
         """
-
+        Database.DATABASE._open_connection()
         try:
             data = ('SELECT * FROM equipment\
                  WHERE equipment_id = %s ')
@@ -71,6 +78,10 @@ class Database(object):
 
         except Exception as ex:
             print("Error", f"Error due to :{str(ex)}")
+        finally:
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
+
 
     @staticmethod
     def select_all_equipment(table):
@@ -79,7 +90,7 @@ class Database(object):
         equipment with parameters of equipment
         so that it will not duplicate Number
         """
-
+        Database.DATABASE._open_connection()
         try:
             data = ('SELECT * FROM   '+table+' ')               
             cursor.execute(data)
@@ -87,6 +98,9 @@ class Database(object):
 
         except Exception as ex:
             print("Error", f"Error due to :{str(ex)}")
+        finally:
+            
+            Database.DATABASE.close()
 
     @staticmethod
     def delete_equipment(table,id):
@@ -94,6 +108,7 @@ class Database(object):
         This function is 
         to insert data to admin login
         """
+        Database.DATABASE._open_connection()
         try:
             
             data = ('DELETE  FROM   '+table+' \
@@ -101,16 +116,20 @@ class Database(object):
             #                  
             # cursor.execute(data)              
             cursor.execute(data) 
-            Database.DATABASE.commit()
+            
             return ("Data has been deleted")
         except Exception as ex:
             print("Error", f"Error due to :{str(ex)}")
+        finally:
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
 
     @staticmethod
     def select_one_equipment(id):
         """
         This function is for querying with parameters of ID
         """
+        Database.DATABASE._open_connection()
         try:
             data = ('SELECT * FROM equipment \
                 WHERE id = "'+id+'"')
@@ -119,6 +138,9 @@ class Database(object):
             return cursor.fetchall()
         except Exception as ex:
             print("Error", f"Error due to :{str(ex)}")
+        finally:
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
 
     @staticmethod
     def update_one_equipment(equipmentID,equipment_name,
@@ -135,6 +157,9 @@ class Database(object):
             val =(equipmentID,equipment_name,purchase_price,chases_number,
                     plate_number,date_purchase,id)
             cursor.execute(data,val)
-            Database.DATABASE.commit()
+           
         except Exception as ex:
             print("Error", f"Error due to :{str(ex)}")
+        finally:
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
