@@ -73,6 +73,101 @@ load = PIL.Image.open("image\login.png")
 load =load.resize((150, 125), PIL.Image.ANTIALIAS)
 logo_icon = ImageTk.PhotoImage(load)
 
+#==============================================Inventory Frame ====================================================
+class inventoryController():
+    def __init__(self,view):
+        self.view = view
+
+    def start(self):# this is to start up Invenotry View
+        self.view.set_up(self) 
+
+
+    def handle_clear_entry_inventory(self):
+        self.view.clear_list()
+        
+
+class InventoryView():
+    """This is for Inventory View"""
+
+    def set_up(self,controller):
+
+        # self.inventoryFrame = Toplevel()
+        # self.inventoryFrame.title("Inventory Insert")
+        # self.width = 450
+        # height = 450
+        # screen_width = self.inventoryFrame.winfo_screenwidth()
+        # screen_height = self.inventoryFrame.winfo_screenheight()
+        # x = (screen_width / 2) - (width / 2)
+        # y = (screen_height / 2) - (height / 2)
+        # self.inventoryFrame.geometry("%dx%d+%d+%d" % (width, height, x, y))
+        # self.inventoryFrame.resizable = True
+        # self.inventoryFrame.config(bg="black")
+
+
+        self.inventoryFrame = Frame(MidViewForm9, width=1100, height=500, bd=2, bg='gray', relief=SOLID)
+        self.inventoryFrame.place(x=170, y=8)
+
+        self.productID = Label(self.inventoryFrame, text='Product ID:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.productID.place(x=10, y=30)
+
+    
+        self.product_id = Entry(self.inventoryFrame, width=15, font=('Arial', 10))
+        self.product_id.place(x=150, y=30)
+
+        self.brand_lbl = Label(self.inventoryFrame, text='Brand:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.brand_lbl.place(x=10, y=60)
+
+    
+        self.brand_inv = Entry(self.inventoryFrame, width=15, font=('Arial', 10))
+        self.brand_inv.place(x=150, y=60)
+
+        self.description_lbl = Label(self.inventoryFrame, text='Description:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.description_lbl.place(x=10, y=90)
+
+        self.descrtip_inv_entry = scrolledtext.ScrolledText(self.inventoryFrame,
+                                                          wrap=tk.WORD,
+                                                          width=23,
+                                                          height=3,
+                                                          font=("Arial",
+                                                                10))
+        self.descrtip_inv_entry.place(x=150, y=90)
+
+        self.quanity_lbl = Label(self.inventoryFrame, text='Quantity:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.quanity_lbl.place(x=10, y=150)
+
+        self.quantity_inv = Entry(self.inventoryFrame, width=15, font=('Arial', 10))
+        self.quantity_inv.place(x=150, y=150)
+
+        self.price_lbl = Label(self.inventoryFrame, text='Price:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.price_lbl.place(x=10, y=180)
+
+        self.price_inv = Entry(self.inventoryFrame, width=15, font=('Arial', 10))
+        self.price_inv.place(x=150, y=180)
+
+
+
+        btn_save = Button(self.inventoryFrame, text='Save', bd=2, bg='blue', fg='white',
+                              font=('arial', 10), width=10, height=1,command=controller.handle_clear_entry_inventory)
+        btn_save.place(x=10, y=250)
+
+    def clear_list(self): # this is to clear all fields
+        self.product_id.delete(0,END)
+        self.brand_inv.delete(0,END)
+        self.descrtip_inv_entry.delete('1.0', END)
+
+
+   
+
+
+
+
+
+
 #==============================================Cost Analysis Frame ================================================
 def update_equipment() -> None:
     """
@@ -492,11 +587,12 @@ def dashboard():
     reportFrame.geometry("%dx%d+%d+%d" % (width, height, x, y))
     reportFrame.resizable = False
     reportFrame.config(bg="cyan")
-
+    
 #=============================================Frame for time & others in DashBoard======================================
     TopdashboardForm = Frame(reportFrame, width=1295, height=50, bd=2, relief=SOLID)
     TopdashboardForm.place(x=1,y=8)
 #============================================================= menu Bar=================================================
+    c = inventoryController(InventoryView())
     menubar = Menu(reportFrame)
     filemenu = Menu(menubar, tearoff=0)
     filemenu2 = Menu(menubar, tearoff=0)
@@ -504,15 +600,15 @@ def dashboard():
     filemenu4 = Menu(menubar, tearoff=0)
     filemenu5 = Menu(menubar, tearoff=0)
     filemenu6 = Menu(menubar, tearoff=0)
-    #filemenu7 = Menu(menubar, tearoff=0)
+    # filemenu7 = Menu(menubar, tearoff=0)
 
     filemenu.add_command(label="Logout", command = Logout)
     # filemenu.add_command(label="Exit")
-    filemenu2.add_command(label="Product Registration")
+    filemenu2.add_command(label="Items Registration", command=c.start)
     filemenu2.add_command(label="Add new")
     filemenu2.add_command(label="View")
-    filemenu3.add_command(label="Payroll")
-    filemenu3.add_command(label="Clients Registration")
+   
+    
     filemenu3.add_command(label="Daily Transactions")
     filemenu4.add_command(label="Accounting Module")
     filemenu5.add_command(label="Reports Module")
