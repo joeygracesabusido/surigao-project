@@ -20,7 +20,7 @@ class Database(object):
         Database.DATABASE._open_connection()
         try: 
             cursor.execute(
-                """CREATE TABLE IF NOT EXISTS inventory_onhand (id INT AUTO_INCREMENT PRIMARY KEY,
+                """CREATE TABLE IF NOT EXISTS inventory_onhand (id INT AUTO_INCREMENT PRIMARY KEY, 
                             product_id VARCHAR(100), 
                             brand VARCHAR(100),
                             description VARCHAR(250),
@@ -28,10 +28,12 @@ class Database(object):
                             price DECIMAL(9,2),
                             stockValue DECIMAL(9,2) GENERATED ALWAYS AS (quantity*price) STORED,
                             date_credited date,
-                            time_update TIMESTAMP
+                            time_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                             UNIQUE (product_id))
                                         """)
                     
+            
+                            
         except Exception as ex:
             print("Error", f"Error due to :{str(ex)}")
 
@@ -40,7 +42,7 @@ class Database(object):
             Database.DATABASE.close()
 
 
-    
+    @staticmethod
     def insert_inventoryOnhand(product_id,brand,description,
                                 quantity,price,date):
         """This is to insert to database Inventory and inventory_onhand Table"""
@@ -61,5 +63,23 @@ class Database(object):
             print("Error", f"Error due to :{str(ex)}")
         finally:
 
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
+
+    @staticmethod
+    def select_Inventory(id):
+        """
+        This function is for querying with parameters of ID
+        """
+        Database.DATABASE._open_connection()
+        try:
+            data = ('SELECT * FROM inventory_onhand \
+                WHERE product_id = "'+id+'"')
+
+            cursor.execute(data)
+            return cursor.fetchone()
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
             Database.DATABASE.commit()
             Database.DATABASE.close()

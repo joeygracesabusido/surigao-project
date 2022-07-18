@@ -1,5 +1,6 @@
 from database_login import Database
 from insert_login import Login
+from datetime import date
 # from insert_login import Login
 from equipment_database import Database
 Database.initialize()
@@ -89,7 +90,11 @@ def delete_equipment():
 
     data =Database.delete_equipment(table=table,id=id)
 
-delete_equipment()
+@staticmethod
+def testing_date():
+    now = date.today()
+    print(now)
+# delete_equipment()
 # select_one()
 # equipmentList()    
 # deleteUser()
@@ -98,4 +103,5 @@ delete_equipment()
 # test2('joeysabusido')
 
 # test()
+testing_date()
     

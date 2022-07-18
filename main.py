@@ -14,6 +14,8 @@ from PIL import Image, ImageTk
 import PIL.Image
 import datetime as dt
 
+from datetime import date
+
 mydb = mysql.connector.connect(
             host="192.46.225.247",
             user="joeysabusido",
@@ -38,6 +40,26 @@ try:
                 username VARCHAR(100), password_employee VARCHAR(100), employee_status VARCHAR(100))")
 except Exception as ex:
     print("Error", f"Error due to :{str(ex)}")
+
+ 
+# try: 
+#     cursor.execute(
+#         """CREATE TABLE IF NOT EXISTS inventory_onhand (id INT AUTO_INCREMENT PRIMARY KEY, 
+#                     product_id VARCHAR(100), 
+#                     brand VARCHAR(100),
+#                     description VARCHAR(250),
+#                     quantity DECIMAL(9,2),
+#                     price DECIMAL(9,2),
+#                     stockValue DECIMAL(9,2) GENERATED ALWAYS AS (quantity*price) STORED,
+#                     date_credited date,
+#                     time_update TIMESTAMP,
+#                     UNIQUE (product_id))
+#                                 """)
+            
+# except Exception as ex:
+#     print("Error", f"Error due to :{str(ex)}")
+
+
 
 
 
@@ -84,7 +106,10 @@ class inventoryController():
 
     def handle_clear_entry_inventory(self):
         self.view.clear_list()
-        
+
+    def insert_inventory(self):
+        self.view.insert_inventoryOnhand()
+        self.view.clear_list()
 
 class InventoryView():
     """This is for Inventory View"""
@@ -112,8 +137,8 @@ class InventoryView():
         self.productID.place(x=10, y=30)
 
     
-        self.product_id = Entry(self.inventoryFrame, width=15, font=('Arial', 10))
-        self.product_id.place(x=150, y=30)
+        self.product_id_entry = Entry(self.inventoryFrame, width=15, font=('Arial', 10))
+        self.product_id_entry.place(x=150, y=30)
 
         self.brand_lbl = Label(self.inventoryFrame, text='Brand:', width=15, height=1, bg='yellow', fg='black',
                           font=('Arial', 10), anchor='e')
@@ -152,24 +177,56 @@ class InventoryView():
 
 
         btn_save = Button(self.inventoryFrame, text='Save', bd=2, bg='blue', fg='white',
-                              font=('arial', 10), width=10, height=1,command=controller.handle_clear_entry_inventory)
+                              font=('arial', 10), width=10, height=1,command=controller.insert_inventory)
         btn_save.place(x=10, y=250)
 
     def clear_list(self): # this is to clear all fields
-        self.product_id.delete(0,END)
+        self.product_id_entry.delete(0,END)
         self.brand_inv.delete(0,END)
         self.descrtip_inv_entry.delete('1.0', END)
+        self.price_inv.delete(0, END)
+        self.quantity_inv.delete(0, END)
+    
+    def insert_inventoryOnhand(self):
+        """This function is for inserting to inventory On hand"""
+        today = date.today()
+        from inventory_database import Database
+       
+        
+        Database.initialize()
 
+        productID_Insert = self.product_id_entry.get()
+        brand_inv_Insert = self.brand_inv.get()
+        description_insert = self.descrtip_inv_entry.get('1.0', 'end-1c')
+        quantity_insert = self.quantity_inv.get()
+        price_insert = self.price_inv.get()
+          
+        date_insert = today
 
-   
+        data = Database.select_Inventory(productID_Insert)
 
+        if data is not None:
+            messagebox.showinfo('JRS','Equipment ID is already Taken')
+        else:
+            if productID_Insert =='' or brand_inv_Insert=='' or description_insert=='' \
+                or quantity_insert==''or price_insert=="":
+                messagebox.showinfo('Please fill up  blank entry field/s ')
+            else:
+               
+                Database.insert_inventoryOnhand(product_id=productID_Insert,brand=brand_inv_Insert,
+                                                description=description_insert,quantity=quantity_insert,
+                                                price=price_insert,date=date_insert)
+                
+                messagebox.showinfo('JRS','Data has been save')
+                
+               
 
 
 
 
 
 #==============================================Cost Analysis Frame ================================================
-def update_equipment() -> None:
+def update_equipment():
     """
     This function is to update Equipment
     """
