@@ -73,7 +73,7 @@ def selection():
         exit
 
     print('===================================')
-def insert_inventoryOnHand()-> None:
+def insert_inventoryOnHand():
     """This function is for inserting inventory on Hand Table"""
     mydb._open_connection()
     cursor = mydb.cursor()
@@ -290,7 +290,23 @@ def insertCategory():
         mydb.commit()
         mydb.close()
 
-insertCategory()
+def inve_category():
+    """This function is for Displaying inventory category"""
+    from inventory_database import Database
+    Database.initialize()
+    agg_result = Database.select_all_category_from_category()
+   
+    for i in agg_result:
+        print(i)
+        
+
+    # data = []
+    # for x in agg_result:
+    #     data.append(x[0])
+    # print(data)
+
+inve_category()
+# insertCategory()
 # report_sales_Inventory()
 # selection()
 

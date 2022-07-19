@@ -30,9 +30,10 @@ class Database(object):
                             category VARCHAR(300),
                             date_credited date,
                             time_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                            INDEX (category),
                             CONSTRAINT FK_category FOREIGN KEY (category)
                             REFERENCES category(category) ON UPDATE CASCADE ON DELETE CASCADE,
-                             UNIQUE (product_id));
+                             UNIQUE (product_id))ENGINE = InnoDB;
                                         """)
                     
             
@@ -47,17 +48,17 @@ class Database(object):
 
     @staticmethod
     def insert_inventoryOnhand(product_id,brand,description,
-                                quantity,price,date):
+                                quantity,price,date,category):
         """This is to insert to database Inventory and inventory_onhand Table"""
         Database.DATABASE._open_connection() # to open database connection
 
         try:
            
             data = ( "INSERT INTO inventory_onhand (product_id,brand,\
-                                description,quantity,price,date_credited)"
-                    "VALUES(%s,%s,%s,%s,%s,%s)")
+                                description,quantity,price,date_credited,category)"
+                    "VALUES(%s,%s,%s,%s,%s,%s,%s)")
             val = (product_id,brand,description,quantity,
-                            price,date)
+                            price,date,category)
             #                  
             # cursor.execute(data)              
             cursor.execute(data,val) 
@@ -86,4 +87,21 @@ class Database(object):
         finally:
             Database.DATABASE.commit()
             Database.DATABASE.close()
-Database.initialize()
+
+    @staticmethod
+    def select_all_category_from_category():
+        """
+        This function is for querying with parameters of ID
+        """
+        Database.DATABASE._open_connection()
+        try:
+            data = ('SELECT category FROM category')
+
+            cursor.execute(data)
+            return cursor.fetchall()
+        
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+            Database.DATABASE.commit()
+            Database.DATABASE.close()

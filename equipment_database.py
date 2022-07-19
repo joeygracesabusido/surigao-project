@@ -163,3 +163,5 @@ class Database(object):
         finally:
             Database.DATABASE.commit()
             Database.DATABASE.close()
+
+    

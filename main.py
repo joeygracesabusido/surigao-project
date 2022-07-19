@@ -96,6 +96,18 @@ load =load.resize((150, 125), PIL.Image.ANTIALIAS)
 logo_icon = ImageTk.PhotoImage(load)
 
 #==============================================Inventory Frame ====================================================
+def inve_category():
+    """This function is for Displaying inventory category"""
+    from inventory_database import Database
+    Database.initialize()
+    agg_result = Database.select_all_category_from_category()
+
+    data = []
+    for x in agg_result:
+        data.append(x[0])
+    return data
+
+
 class inventoryController():
     def __init__(self,view):
         self.view = view
@@ -174,6 +186,15 @@ class InventoryView():
         self.price_inv = Entry(self.inventoryFrame, width=15, font=('Arial', 10))
         self.price_inv.place(x=150, y=180)
 
+        self.category_lbl = Label(self.inventoryFrame, text='Category:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.category_lbl.place(x=10, y=210)
+
+        self.categoryEntry = ttk.Combobox(self.inventoryFrame, width=20,font=('Arial', 12))
+        self.categoryEntry['values'] = inve_category()
+        self.categoryEntry.place(x=150, y=210)
+        # self.categoryEntry.bind("<<ComboboxSelected>>", auto_account_num)
+
 
 
         btn_save = Button(self.inventoryFrame, text='Save', bd=2, bg='blue', fg='white',
@@ -186,6 +207,9 @@ class InventoryView():
         self.descrtip_inv_entry.delete('1.0', END)
         self.price_inv.delete(0, END)
         self.quantity_inv.delete(0, END)
+        self.categoryEntry.delete(0, END)
+    
+    
     
     def insert_inventoryOnhand(self):
         """This function is for inserting to inventory On hand"""
@@ -200,6 +224,7 @@ class InventoryView():
         description_insert = self.descrtip_inv_entry.get('1.0', 'end-1c')
         quantity_insert = self.quantity_inv.get()
         price_insert = self.price_inv.get()
+        categoryInsert = self.categoryEntry.get()
           
         date_insert = today
 
@@ -215,7 +240,7 @@ class InventoryView():
                
                 Database.insert_inventoryOnhand(product_id=productID_Insert,brand=brand_inv_Insert,
                                                 description=description_insert,quantity=quantity_insert,
-                                                price=price_insert,date=date_insert)
+                                                price=price_insert,date=date_insert,category=categoryInsert)
                 
                 messagebox.showinfo('JRS','Data has been save')
                 
