@@ -27,9 +27,12 @@ class Database(object):
                             quantity DECIMAL(9,2),
                             price DECIMAL(9,2),
                             stockValue DECIMAL(9,2) GENERATED ALWAYS AS (quantity*price) STORED,
+                            category VARCHAR(300),
                             date_credited date,
                             time_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                            UNIQUE (product_id))
+                            CONSTRAINT FK_category FOREIGN KEY (category)
+                            REFERENCES category(category) ON UPDATE CASCADE ON DELETE CASCADE,
+                             UNIQUE (product_id));
                                         """)
                     
             
@@ -83,3 +86,4 @@ class Database(object):
         finally:
             Database.DATABASE.commit()
             Database.DATABASE.close()
+Database.initialize()

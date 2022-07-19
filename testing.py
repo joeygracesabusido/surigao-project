@@ -10,41 +10,41 @@ mydb = mysql.connector.connect(
                                 database="ldsurigao",
                                 auth_plugin='mysql_native_password')
 cursor = mydb.cursor()
-try:
-    cursor.execute(
-                    """CREATE TABLE IF NOT EXISTS inventory (id INT AUTO_INCREMENT PRIMARY KEY,
-                            date DATE,
-                            product_id VARCHAR(100), 
-                            quantity DECIMAL(9,2) ,
-                            FOREIGN KEY (product_id) REFERENCES inventory_onhand(product_id)) 
-                                        """)
+# try:
+#     cursor.execute(
+#                     """CREATE TABLE IF NOT EXISTS inventory (id INT AUTO_INCREMENT PRIMARY KEY,
+#                             date DATE,
+#                             product_id VARCHAR(100), 
+#                             quantity DECIMAL(9,2) ,
+#                             FOREIGN KEY (product_id) REFERENCES inventory_onhand(product_id)) 
+#                                         """)
 
-except Exception as ex:
-            print("Error", f"Error due to :{str(ex)}")
+# except Exception as ex:
+#             print("Error", f"Error due to :{str(ex)}")
 
-try:
-    cursor.execute(
-                    """CREATE TABLE IF NOT EXISTS sales (id INT AUTO_INCREMENT PRIMARY KEY,
-                            date DATE,
-                            product_id VARCHAR(100), 
-                            quantity DECIMAL(9,2),
-                            FOREIGN KEY (product_id) REFERENCES inventory_onhand(product_id))
-                                        """)
+# try:
+#     cursor.execute(
+#                     """CREATE TABLE IF NOT EXISTS sales (id INT AUTO_INCREMENT PRIMARY KEY,
+#                             date DATE,
+#                             product_id VARCHAR(100), 
+#                             quantity DECIMAL(9,2),
+#                             FOREIGN KEY (product_id) REFERENCES inventory_onhand(product_id))
+#                                         """)
 
-except Exception as ex:
-            print("Error", f"Error due to :{str(ex)}")
+# except Exception as ex:
+#             print("Error", f"Error due to :{str(ex)}")
 
-try:
-    cursor.execute(
-                    """CREATE TABLE IF NOT EXISTS inventory_onhand (id INT AUTO_INCREMENT PRIMARY KEY,
-                            product_id VARCHAR(100), 
-                            description VARCHAR(250),
-                            quantity DECIMAL(9,2),
-                            UNIQUE (product_id))
-                                        """)
+# try:
+#     cursor.execute(
+#                     """CREATE TABLE IF NOT EXISTS inventory_onhand (id INT AUTO_INCREMENT PRIMARY KEY,
+#                             product_id VARCHAR(100), 
+#                             description VARCHAR(250),
+#                             quantity DECIMAL(9,2),
+#                             UNIQUE (product_id))
+#                                         """)
 
-except Exception as ex:
-            print("Error", f"Error due to :{str(ex)}")
+# except Exception as ex:
+#             print("Error", f"Error due to :{str(ex)}")
 
 
 def selection():
@@ -268,7 +268,29 @@ def report_sales_Inventory():
     myresult = cursor.fetchall()
 
     print(tabulate(myresult, headers =['ID','Product ID','Description','Quantity'], tablefmt='psql'))
-    selection()       
+    selection() 
 
-report_sales_Inventory()
+def insertCategory():
+    """This function is to insert to category Table"""
+    mydb._open_connection()
+    cursor = mydb.cursor()
+
+    category_list = input("Enter Category: ") 
+    try: 
+        data = "INSERT INTO category (category) VALUES(%s)"
+                        
+        val =  category_list
+
+        cursor.execute(data,(val,))
+
+    except Exception as ex:
+        print("Error", f"Error due to :{str(ex)}")
+    finally:
+
+        mydb.commit()
+        mydb.close()
+
+insertCategory()
+# report_sales_Inventory()
 # selection()
+
