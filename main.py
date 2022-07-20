@@ -107,6 +107,198 @@ def inve_category():
         data.append(x[0])
     return data
 
+class insert_inventoryController():
+    def __init__(self,view):
+        self.view = view
+
+    def start(self):# this is to start up Invenotry View
+        self.view.set_up(self)
+
+    def click_inventorySearch(self):
+        # self.view.clear_inputs()
+        self.view.search_inventory()
+
+class Insert_purchasesView():
+    """This is for insert Inventory View"""
+    def set_up(self,controller):
+        self.insert_inventoryFrame = Frame(MidViewForm9, width=1100, height=550, bd=2, bg='gray', relief=SOLID)
+        self.insert_inventoryFrame.place(x=170, y=8)
+
+
+        self.trans_date_lbl = Label(self.insert_inventoryFrame, text='Date', width=15, height=1, bg='yellow', fg='black',
+                               font=('Arial', 10), anchor='e')
+        self.trans_date_lbl .place(x=10, y=15)
+
+        
+        self.trans_date_entry  = DateEntry(self.insert_inventoryFrame, width=15, background='darkblue', date_pattern='yyyy-MM-dd',
+                                    foreground='white', borderwidth=2, padx=10, pady=10)
+        self.trans_date_entry.place(x=150, y=15)
+        self.trans_date_entry.configure(justify='center')
+
+        self.mris_lbl = Label(self.insert_inventoryFrame, text='MRIS no.:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.mris_lbl.place(x=10, y=45)
+
+    
+        self.mris_entry = Entry(self.insert_inventoryFrame, width=15, font=('Arial', 10))
+        self.mris_entry.place(x=150, y=45)
+
+        self.invoice_lbl = Label(self.insert_inventoryFrame, text='Invoice no.:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.invoice_lbl.place(x=10, y=75)
+
+    
+        self.invoice_entry = Entry(self.insert_inventoryFrame, width=15, font=('Arial', 10))
+        self.invoice_entry.place(x=150, y=75)
+
+
+
+        self.productID = Label(self.insert_inventoryFrame, text='Product ID:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.productID.place(x=10, y=105)
+
+    
+        self.product_id_entry = Entry(self.insert_inventoryFrame, width=15, font=('Arial', 10))
+        self.product_id_entry.place(x=150, y=105)
+
+        self.brand_lbl = Label(self.insert_inventoryFrame, text='Brand:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.brand_lbl.place(x=10, y=135)
+
+    
+        self.brand_inv = Entry(self.insert_inventoryFrame, width=15, font=('Arial', 10))
+        self.brand_inv.place(x=150, y=135)
+
+        
+
+        self.description_lbl = Label(self.insert_inventoryFrame, text='Description:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.description_lbl.place(x=10, y=165)
+
+        self.descrtip_inv_entry = scrolledtext.ScrolledText(self.insert_inventoryFrame,
+                                                          wrap=tk.WORD,
+                                                          width=23,
+                                                          height=3,
+                                                          font=("Arial",
+                                                                10))
+        self.descrtip_inv_entry.place(x=150, y=165)
+
+        self.quanity_lbl = Label(self.insert_inventoryFrame, text='Quantity:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.quanity_lbl.place(x=10, y=225)
+
+        self.quantity_inv = Entry(self.insert_inventoryFrame, width=15, font=('Arial', 10))
+        self.quantity_inv.place(x=150, y=225)
+
+        self.price_lbl = Label(self.insert_inventoryFrame, text='Price:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.price_lbl.place(x=10, y=255)
+
+        self.price_inv = Entry(self.insert_inventoryFrame, width=15, font=('Arial', 10))
+        self.price_inv.place(x=150, y=255)
+
+        self.unit_lbl = Label(self.insert_inventoryFrame, text='Unit:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.unit_lbl.place(x=10, y=285)
+
+        self.unit_inv = Entry(self.insert_inventoryFrame, width=15, font=('Arial', 10))
+        self.unit_inv.place(x=150, y=285)
+
+        self.category_lbl = Label(self.insert_inventoryFrame, text='Category:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.category_lbl.place(x=10, y=315)
+
+        self.categoryEntry = ttk.Combobox(self.insert_inventoryFrame, width=20,font=('Arial', 10))
+        self.categoryEntry['values'] = inve_category()
+        self.categoryEntry.place(x=150, y=315)
+
+
+        self.btn_search = Button(self.insert_inventoryFrame, text='Search', bd=2, bg='blue', fg='white',
+                              font=('arial', 10), width=10, height=1,command=controller.click_inventorySearch)
+        self.btn_search.place(x=280, y=105)
+
+        self.inventoryTreeview_form = Frame(self.insert_inventoryFrame, width=700, height=10)
+        self.inventoryTreeview_form.place(x=410, y=40)
+
+
+        # This is for Tree view frame for Insert Purchases
+        style = ttk.Style(self.insert_inventoryFrame)
+        style.theme_use("clam")
+        style.configure("Treeview",
+                        background="white",
+                        foreground="black",
+                        rowheight=20,
+                        fieldbackground="white")
+    
+        
+        
+        
+        scrollbarx = Scrollbar(self.inventoryTreeview_form, orient=HORIZONTAL)
+        scrollbary = Scrollbar(self.inventoryTreeview_form, orient=VERTICAL)
+        
+        self.inventoryTreeview = ttk.Treeview(self.inventoryTreeview_form,
+                                                columns=('Product ID','Brand', 'Description','Quantity',
+                                                'Unit'),
+                                                selectmode="extended", height=20, yscrollcommand=scrollbary.set,
+                                                xscrollcommand=scrollbarx.set)
+        scrollbary.config(command=self.inventoryTreeview.yview)
+        scrollbary.pack(side=RIGHT, fill=Y)
+        scrollbarx.config(command=self.inventoryTreeview.xview)
+        scrollbarx.pack(side=BOTTOM, fill=X)
+        self.inventoryTreeview.heading('Product ID', text="Product ID", anchor=CENTER)
+        self.inventoryTreeview.heading('Brand', text="Brand", anchor=CENTER)
+        self.inventoryTreeview.heading('Description', text="Descrtiption", anchor=CENTER)
+        self.inventoryTreeview.heading('Quantity', text="Quantity", anchor=CENTER)
+        self.inventoryTreeview.heading('Unit', text="Unit", anchor=CENTER)
+        
+
+
+        self.inventoryTreeview.column('#0', stretch=NO, minwidth=0, width=0, anchor='e')
+        self.inventoryTreeview.column('#1', stretch=NO, minwidth=0, width=100, anchor='center')
+        self.inventoryTreeview.column('#2', stretch=NO, minwidth=0, width=100, anchor='sw')
+        self.inventoryTreeview.column('#3', stretch=NO, minwidth=0, width=150, anchor='sw')
+        self.inventoryTreeview.column('#4', stretch=NO, minwidth=0, width=150, anchor='e')
+        self.inventoryTreeview.column('#5', stretch=NO, minwidth=0, width=150, anchor='e')
+        
+       
+    
+        self.inventoryTreeview.pack()
+    
+    def clear_inputs(self):
+        """This is to clear input fields"""
+        self.product_id_entry.delete(0, END)
+        self.brand_inv.delete(0, END)
+        self.descrtip_inv_entry.delete('1.0', END)
+        self.price_inv.delete(0, END)
+
+
+    def search_inventory(self):
+        """This is to search invenotry using product ID"""
+        from inventory_database import Database
+        Database.initialize()
+
+        self.productId_search = self.product_id_entry.get()
+        myresult = Database.select_One_from_inventoryData(product_id=self.product_id_entry.get())
+
+        for i in myresult:
+            self.productIdSearch = i[1]
+            self.brandSearch = i[2]
+            self.descriptionSearch = i[3]
+            self.priceSearch = i[5]
+            self.categorySearch = i[7]
+            
+
+            self.product_id_entry.delete(0, END)
+            self.product_id_entry.insert(0, (self.productIdSearch))
+
+            self.brand_inv.delete(0, END)
+            self.brand_inv.insert(0, (self.brandSearch))
+
+            self.descrtip_inv_entry.delete('1.0', END)
+            self.descrtip_inv_entry.insert('1.0',(self.descriptionSearch))
+
+            self.price_inv.delete(0, END)
+            self.price_inv.insert(0,(self.priceSearch))
 
 class inventoryController():
     def __init__(self,view):
@@ -121,7 +313,10 @@ class inventoryController():
 
     def insert_inventory(self):
         self.view.insert_inventoryOnhand()
+        self.view.inventory_treeview_display()
         self.view.clear_list()
+    def display_inventory(self):
+        self.view.inventory_treeview_display()
 
 class InventoryView():
     """This is for Inventory View"""
@@ -186,20 +381,81 @@ class InventoryView():
         self.price_inv = Entry(self.inventoryFrame, width=15, font=('Arial', 10))
         self.price_inv.place(x=150, y=180)
 
+        self.unit_lbl = Label(self.inventoryFrame, text='Unit:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.unit_lbl.place(x=10, y=210)
+
+        self.unit_inv = Entry(self.inventoryFrame, width=15, font=('Arial', 10))
+        self.unit_inv.place(x=150, y=210)
+
         self.category_lbl = Label(self.inventoryFrame, text='Category:', width=15, height=1, bg='yellow', fg='black',
                           font=('Arial', 10), anchor='e')
-        self.category_lbl.place(x=10, y=210)
+        self.category_lbl.place(x=10, y=240)
 
-        self.categoryEntry = ttk.Combobox(self.inventoryFrame, width=20,font=('Arial', 12))
+        self.categoryEntry = ttk.Combobox(self.inventoryFrame, width=20,font=('Arial', 10))
         self.categoryEntry['values'] = inve_category()
-        self.categoryEntry.place(x=150, y=210)
+        self.categoryEntry.place(x=150, y=240)
         # self.categoryEntry.bind("<<ComboboxSelected>>", auto_account_num)
 
 
-
-        btn_save = Button(self.inventoryFrame, text='Save', bd=2, bg='blue', fg='white',
+        self.btn_save = Button(self.inventoryFrame, text='Save', bd=2, bg='blue', fg='white',
                               font=('arial', 10), width=10, height=1,command=controller.insert_inventory)
-        btn_save.place(x=10, y=250)
+        self.btn_save.place(x=10, y=270)
+
+        self.btn_display = Button(self.inventoryFrame, text='Display', bd=2, bg='blue', fg='white',
+                              font=('arial', 10), width=10, height=1,command=controller.display_inventory)
+        self.btn_display.place(x=850, y=15)
+
+
+        self.inventoryTreeview_form = Frame(self.inventoryFrame, width=700, height=10)
+        self.inventoryTreeview_form.place(x=380, y=40)
+
+        style = ttk.Style(self.inventoryFrame)
+        style.theme_use("clam")
+        style.configure("Treeview",
+                        background="white",
+                        foreground="black",
+                        rowheight=20,
+                        fieldbackground="white")
+    
+        
+        
+        
+        scrollbarx = Scrollbar(self.inventoryTreeview_form, orient=HORIZONTAL)
+        scrollbary = Scrollbar(self.inventoryTreeview_form, orient=VERTICAL)
+        
+        self.inventoryTreeview = ttk.Treeview(self.inventoryTreeview_form,
+                                                columns=('Product ID','Brand', 'Description','Quantity',
+                                                'Unit'),
+                                                selectmode="extended", height=20, yscrollcommand=scrollbary.set,
+                                                xscrollcommand=scrollbarx.set)
+        scrollbary.config(command=self.inventoryTreeview.yview)
+        scrollbary.pack(side=RIGHT, fill=Y)
+        scrollbarx.config(command=self.inventoryTreeview.xview)
+        scrollbarx.pack(side=BOTTOM, fill=X)
+        self.inventoryTreeview.heading('Product ID', text="Product ID", anchor=CENTER)
+        self.inventoryTreeview.heading('Brand', text="Brand", anchor=CENTER)
+        self.inventoryTreeview.heading('Description', text="Descrtiption", anchor=CENTER)
+        self.inventoryTreeview.heading('Quantity', text="Quantity", anchor=CENTER)
+        self.inventoryTreeview.heading('Unit', text="Unit", anchor=CENTER)
+        
+
+
+        self.inventoryTreeview.column('#0', stretch=NO, minwidth=0, width=0, anchor='e')
+        self.inventoryTreeview.column('#1', stretch=NO, minwidth=0, width=100, anchor='center')
+        self.inventoryTreeview.column('#2', stretch=NO, minwidth=0, width=100, anchor='sw')
+        self.inventoryTreeview.column('#3', stretch=NO, minwidth=0, width=150, anchor='sw')
+        self.inventoryTreeview.column('#4', stretch=NO, minwidth=0, width=150, anchor='e')
+        self.inventoryTreeview.column('#5', stretch=NO, minwidth=0, width=150, anchor='e')
+        
+       
+    
+        self.inventoryTreeview.pack()
+
+        # if userName_entry_registry.get() != 'joeysabusido':
+        #     self.btn_save['state'] = DISABLED
+        
+
 
     def clear_list(self): # this is to clear all fields
         self.product_id_entry.delete(0,END)
@@ -208,10 +464,11 @@ class InventoryView():
         self.price_inv.delete(0, END)
         self.quantity_inv.delete(0, END)
         self.categoryEntry.delete(0, END)
+        self.unit_inv.delete(0, END)
     
     
     
-    def insert_inventoryOnhand(self):
+    def insert_inventoryOnhand(self): # this is to insert record 
         """This function is for inserting to inventory On hand"""
         today = date.today()
         from inventory_database import Database
@@ -225,6 +482,7 @@ class InventoryView():
         quantity_insert = self.quantity_inv.get()
         price_insert = self.price_inv.get()
         categoryInsert = self.categoryEntry.get()
+        unitInsert = self.unit_inv.get()
           
         date_insert = today
 
@@ -237,17 +495,37 @@ class InventoryView():
                 or quantity_insert==''or price_insert=="":
                 messagebox.showinfo('Please fill up  blank entry field/s ')
             else:
+                try:
+                    Database.insert_inventoryOnhand(product_id=productID_Insert,brand=brand_inv_Insert,
+                                                    description=description_insert,quantity=quantity_insert,
+                                                    price=price_insert,date=date_insert,category=categoryInsert,
+                                                    unit=unitInsert)
+                    
+                    messagebox.showinfo('JRS','Data has been save')
+                except Exception as ex:
+                    messagebox.showerror( f"Error due to :{str(ex)}")
+
+    def inventory_treeview_display(self):
+        self.inventoryTreeview.delete(*self.inventoryTreeview.get_children())
+        return self.inventory_treevie_list()
+
+    def inventory_treevie_list(self):
+        """This function is for querying for treeview for inventory Database"""
+        from inventory_database import Database
+        Database.initialize()   
+
+        myresult = Database.select_all_from_inventoryData()
+
+        for i in myresult:
+            self.productID_view = i[1]   
+            self.brand_view = i[2]   
+            self.description_view = i[3]  
+            self.quantity_view = i[4] 
+            self.unit_view = i[6]
+
+            self.inventoryTreeview.insert('', 'end', values=(self.productID_view,self.brand_view,
+                                self.description_view,self.quantity_view,self.unit_view))
                
-                Database.insert_inventoryOnhand(product_id=productID_Insert,brand=brand_inv_Insert,
-                                                description=description_insert,quantity=quantity_insert,
-                                                price=price_insert,date=date_insert,category=categoryInsert)
-                
-                messagebox.showinfo('JRS','Data has been save')
-                
-               
-
-
-
 
 
 #==============================================Cost Analysis Frame ================================================
@@ -675,6 +953,7 @@ def dashboard():
     TopdashboardForm.place(x=1,y=8)
 #============================================================= menu Bar=================================================
     c = inventoryController(InventoryView())
+    insert_inventory = insert_inventoryController(Insert_purchasesView())
     menubar = Menu(reportFrame)
     filemenu = Menu(menubar, tearoff=0)
     filemenu2 = Menu(menubar, tearoff=0)
@@ -687,7 +966,7 @@ def dashboard():
     filemenu.add_command(label="Logout", command = Logout)
     # filemenu.add_command(label="Exit")
     filemenu2.add_command(label="Items Registration", command=c.start)
-    filemenu2.add_command(label="Add new")
+    filemenu2.add_command(label="Add Purchases", command=insert_inventory.start)
     filemenu2.add_command(label="View")
    
     
@@ -801,6 +1080,7 @@ loginlabe = Label(root,text='Sign in as',width=17,height=1,bg='yellow',fg='gray'
                             font=('Arial',14),anchor='c')
 loginlabe.place(x=370,y=70)
 
+global user_description
 user_description = ttk.Combobox(root, width=19,font=('Arial',13))
 user_description['values'] = ("Admin", "Employee")
 user_description.place(x=370, y=105)

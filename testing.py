@@ -298,15 +298,44 @@ def inve_category():
    
     for i in agg_result:
         print(i)
-        
 
+def inventory_treevie_list():
+        """This function is for querying for treeview for inventory Database"""
+        from inventory_database import Database
+        Database.initialize()   
+
+        myresult = Database.select_all_from_inventoryData()
+
+        for i in myresult:
+            productID_view = i[1]   
+            brand_view = i[2]   
+            description_view = i[3]  
+            quantity_view = i[4] 
+
+            print(productID_view)
+
+def search_inventory():
+    """This is to search invenotry using product ID"""
+    from inventory_database import Database
+    Database.initialize()
+
+    productId_search = input("Enter inventory ID: ")
+    myresult = Database.select_One_from_inventoryData(product_id=productId_search)
+
+    for i in myresult:
+        brandSearch = i[2]
+        print(brandSearch)
+        
+        
+# inventory_treevie_list()
     # data = []
     # for x in agg_result:
     #     data.append(x[0])
     # print(data)
 
-inve_category()
+# inve_category()
 # insertCategory()
 # report_sales_Inventory()
 # selection()
 
+search_inventory()

@@ -18,47 +18,47 @@ class Database(object):
         cursor = Database.DATABASE.cursor()
 
         Database.DATABASE._open_connection()
-        try: 
-            cursor.execute(
-                """CREATE TABLE IF NOT EXISTS inventory_onhand (id INT AUTO_INCREMENT PRIMARY KEY, 
-                            product_id VARCHAR(100), 
-                            brand VARCHAR(100),
-                            description VARCHAR(250),
-                            quantity DECIMAL(9,2),
-                            price DECIMAL(9,2),
-                            stockValue DECIMAL(9,2) GENERATED ALWAYS AS (quantity*price) STORED,
-                            category VARCHAR(300),
-                            date_credited date,
-                            time_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                            INDEX (category),
-                            CONSTRAINT FK_category FOREIGN KEY (category)
-                            REFERENCES category(category) ON UPDATE CASCADE ON DELETE CASCADE,
-                             UNIQUE (product_id))ENGINE = InnoDB;
-                                        """)
+        # try: 
+        #     cursor.execute(
+        #         """CREATE TABLE IF NOT EXISTS inventory_onhand (id INT AUTO_INCREMENT PRIMARY KEY, 
+        #                     product_id VARCHAR(100), 
+        #                     brand VARCHAR(100),
+        #                     description VARCHAR(250),
+        #                     quantity DECIMAL(9,2),
+        #                     price DECIMAL(9,2),
+        #                     stockValue DECIMAL(9,2) GENERATED ALWAYS AS (quantity*price) STORED,
+        #                     category VARCHAR(300),
+        #                     date_credited date,
+        #                     time_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        #                     INDEX (category),
+        #                     CONSTRAINT FK_category FOREIGN KEY (category)
+        #                     REFERENCES category(category) ON UPDATE CASCADE ON DELETE CASCADE,
+        #                      UNIQUE (product_id))ENGINE = InnoDB;
+        #                                 """)
                     
             
                             
-        except Exception as ex:
-            print("Error", f"Error due to :{str(ex)}")
+        # except Exception as ex:
+        #     print("Error", f"Error due to :{str(ex)}")
 
-        finally:
-            Database.DATABASE.commit()
-            Database.DATABASE.close()
+        # finally:
+        #     Database.DATABASE.commit()
+        #     Database.DATABASE.close()
 
 
     @staticmethod
     def insert_inventoryOnhand(product_id,brand,description,
-                                quantity,price,date,category):
+                                quantity,price,date,category,unit):
         """This is to insert to database Inventory and inventory_onhand Table"""
         Database.DATABASE._open_connection() # to open database connection
 
         try:
            
             data = ( "INSERT INTO inventory_onhand (product_id,brand,\
-                                description,quantity,price,date_credited,category)"
-                    "VALUES(%s,%s,%s,%s,%s,%s,%s)")
+                                description,quantity,price,date_credited,category,unit)"
+                    "VALUES(%s,%s,%s,%s,%s,%s,%s,%s)")
             val = (product_id,brand,description,quantity,
-                            price,date,category)
+                            price,date,category,unit)
             #                  
             # cursor.execute(data)              
             cursor.execute(data,val) 
@@ -95,7 +95,39 @@ class Database(object):
         """
         Database.DATABASE._open_connection()
         try:
-            data = ('SELECT category FROM category')
+            data = ('SELECT category FROM category ORDER by category ASC')
+
+            cursor.execute(data)
+            return cursor.fetchall()
+        
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
+
+    @staticmethod
+    def select_all_from_inventoryData():
+        """This function is for querying to inventory Database with out parameters"""
+        Database.DATABASE._open_connection()
+        try:
+            data = ('SELECT * FROM inventory_onhand')
+
+            cursor.execute(data)
+            return cursor.fetchall()
+        
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
+
+    @staticmethod
+    def select_One_from_inventoryData(product_id):
+        """This function is for queryon to invenoty Database with parameters of product inv."""
+        Database.DATABASE._open_connection()
+        try:
+            data = ('SELECT * FROM inventory_onhand WHERE product_id = "'+product_id+'"')
 
             cursor.execute(data)
             return cursor.fetchall()
