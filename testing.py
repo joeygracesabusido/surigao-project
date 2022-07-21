@@ -368,7 +368,7 @@ def testingInsertOne():
         except Exception as ex:
             print("Error", f"Error due to :{str(ex)}")
 
-testingInsertOne()        
+#testingInsertOne()        
 # inventory_treevie_list()
     # data = []
     # for x in agg_result:

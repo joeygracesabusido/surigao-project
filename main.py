@@ -7,7 +7,6 @@ from tkcalendar import DateEntry as TkcDateEntry
 from tkinter import scrolledtext
 from tkinter.scrolledtext import ScrolledText
 import tkinter as tk
-import tkinter.messagebox as tkMessageBox
 from tkinter import messagebox
 
 from PIL import Image, ImageTk
@@ -15,6 +14,8 @@ import PIL.Image
 import datetime as dt
 
 from datetime import date, datetime
+
+from abc import ABC,abstractmethod
 
 mydb = mysql.connector.connect(
             host="192.46.225.247",
@@ -106,22 +107,42 @@ def clearFrame():
 #==============================================Inventory Frame ====================================================
 def inve_category():
     """This function is for Displaying inventory category"""
-    from inventory_database import Database
-    Database.initialize()
-    agg_result = Database.select_all_category_from_category()
+    # from inventory_database import Database
+    # Database.initialize()
+    # agg_result = Database.select_all_category_from_category()
+    mydb._open_connection()
+    
+    cursor.execute('SELECT category FROM category ORDER by category ASC')
+
+    agg_result = cursor.fetchall()
 
     data = []
     for x in agg_result:
         data.append(x[0])
     return data
+class View(ABC):
+    def setup(self,controller):
+        pass
+    def clear_inputs(self):
+        pass
+    def search_inventory(self):
+        pass
+    def insertPurchases(self):
+        pass
+    def inventory_treeview_display(self):
+        pass
+    def inventory_treevie_list(self):
+        pass
 
 class insert_inventoryController():
-    def __init__(self,view):
+    def __init__(self,view:View):
         self.view = view
 
     def start(self):# this is to start up Invenotry View
         clearFrame()
         self.view.set_up(self)
+        # self.view.inve_category()
+        self.view.inventory_treevie_list()
 
     def click_inventorySearch(self):
         # self.view.clear_inputs()
@@ -129,9 +150,21 @@ class insert_inventoryController():
     def clcik_save_inventoryBtn(self):
         self.view.insertPurchases()
 
-class Insert_purchasesView():
+class Insert_purchasesView(View):
     """This is for insert Inventory View"""
     def set_up(self,controller):
+
+        # self.insert_inventoryFrame = Toplevel()
+        # self.insert_inventoryFrame.title("Inventory Insert")
+        # self.width = 1250
+        # height = 450
+        # screen_width = self.insert_inventoryFrame.winfo_screenwidth()
+        # screen_height = self.insert_inventoryFrame.winfo_screenheight()
+        # x = (screen_width / 2) - (width / 2)
+        # y = (screen_height / 2) - (height / 2)
+        # self.insert_inventoryFrame.geometry("%dx%d+%d+%d" % (width, height, x, y))
+        # self.insert_inventoryFrame.resizable = True
+        # self.insert_inventoryFrame.config(bg="black")
         
         self.insert_inventoryFrame = Frame(MidViewForm9, width=1250, height=550, bd=2, bg='gray', relief=SOLID)
         self.insert_inventoryFrame.place(x=20, y=8)
@@ -236,6 +269,10 @@ class Insert_purchasesView():
         self.inventoryTreeview_form = Frame(self.insert_inventoryFrame, width=700, height=10)
         self.inventoryTreeview_form.place(x=370, y=40)
 
+        # this is for search fields
+
+        
+
 
         # This is for Tree view frame for Insert Purchases
         style = ttk.Style(self.insert_inventoryFrame)
@@ -253,28 +290,32 @@ class Insert_purchasesView():
         scrollbary = Scrollbar(self.inventoryTreeview_form, orient=VERTICAL)
         
         self.inventoryTreeview = ttk.Treeview(self.inventoryTreeview_form,
-                                                columns=('Product ID','Brand', 'Description','Quantity',
-                                                'Unit'),
+                                                columns=('Date','Product ID','Brand',
+                                                 'Description','Quantity','Price','Amount'),
                                                 selectmode="extended", height=20, yscrollcommand=scrollbary.set,
                                                 xscrollcommand=scrollbarx.set)
         scrollbary.config(command=self.inventoryTreeview.yview)
         scrollbary.pack(side=RIGHT, fill=Y)
         scrollbarx.config(command=self.inventoryTreeview.xview)
         scrollbarx.pack(side=BOTTOM, fill=X)
+        self.inventoryTreeview.heading('Date', text="Date", anchor=CENTER)
         self.inventoryTreeview.heading('Product ID', text="Product ID", anchor=CENTER)
         self.inventoryTreeview.heading('Brand', text="Brand", anchor=CENTER)
         self.inventoryTreeview.heading('Description', text="Descrtiption", anchor=CENTER)
         self.inventoryTreeview.heading('Quantity', text="Quantity", anchor=CENTER)
-        self.inventoryTreeview.heading('Unit', text="Unit", anchor=CENTER)
+        self.inventoryTreeview.heading('Price', text="Price", anchor=CENTER)
+        self.inventoryTreeview.heading('Amount', text="Amount", anchor=CENTER)
         
 
 
         self.inventoryTreeview.column('#0', stretch=NO, minwidth=0, width=0, anchor='e')
-        self.inventoryTreeview.column('#1', stretch=NO, minwidth=0, width=100, anchor='center')
-        self.inventoryTreeview.column('#2', stretch=NO, minwidth=0, width=100, anchor='sw')
-        self.inventoryTreeview.column('#3', stretch=NO, minwidth=0, width=150, anchor='sw')
-        self.inventoryTreeview.column('#4', stretch=NO, minwidth=0, width=150, anchor='e')
-        self.inventoryTreeview.column('#5', stretch=NO, minwidth=0, width=150, anchor='e')
+        self.inventoryTreeview.column('#1', stretch=NO, minwidth=0, width=70, anchor='center')
+        self.inventoryTreeview.column('#2', stretch=NO, minwidth=0, width=80, anchor='sw')
+        self.inventoryTreeview.column('#3', stretch=NO, minwidth=0, width=120, anchor='sw')
+        self.inventoryTreeview.column('#4', stretch=NO, minwidth=0, width=200, anchor='e')
+        self.inventoryTreeview.column('#5', stretch=NO, minwidth=0, width=100, anchor='e')
+        self.inventoryTreeview.column('#6', stretch=NO, minwidth=0, width=100, anchor='e')
+        self.inventoryTreeview.column('#7', stretch=NO, minwidth=0, width=100, anchor='e')
         
        
     
@@ -366,17 +407,34 @@ class Insert_purchasesView():
             except Exception as ex:
                 messagebox.showerror("Error", f"Error due to :{str(ex)}")
 
+    def inventory_treeview_display(self):
+        self.inventoryTreeview.delete(*self.inventoryTreeview.get_children())
+        return self.inventory_treevie_list()
 
+    def inventory_treevie_list(self):
+        """This function is for querying for treeview for inventory Database"""
+        from inventory_database import Database
+        Database.initialize()   
 
+        myresult = Database.select_all_from_purchase()
 
-    def clearFrame(self):
-        # destroy all widgets from frame
-        for widget in MidViewForm9.winfo_children():
-            widget.destroy()
+        for i in myresult:
+            self.transDate_view = i[1]
+            self.productID_view = i[4]   
+            self.brand_view = i[5]   
+            self.description_view = i[6]  
+            self.quantity_view = i[7] 
+            self.price_view =  '{:,.2f}'.format(i[8])
+            self.stockamount_view = '{:,.2f}'.format(i[9])
+            
+           
 
-        # this will clear frame and frame will be empty
-        # if you want to hide the empty panel then
-        MidViewForm9.pack_forget()
+            self.inventoryTreeview.insert('', 'end', values=(self.transDate_view,
+                                    self.productID_view,self.brand_view,
+                                self.description_view,self.quantity_view,
+                                self.price_view, self.stockamount_view))
+
+    
 
 class inventoryController():
     def __init__(self,view):
@@ -385,7 +443,7 @@ class inventoryController():
     def start(self):# this is to start up Invenotry View
         clearFrame()
         self.view.set_up(self) 
-        
+        self.view.inventory_treeview_display()
 
 
     def handle_clear_entry_inventory(self):
@@ -506,7 +564,7 @@ class InventoryView():
         
         self.inventoryTreeview = ttk.Treeview(self.inventoryTreeview_form,
                                                 columns=('Product ID','Brand', 'Description','Quantity',
-                                                'Unit'),
+                                                'Unit','Amount'),
                                                 selectmode="extended", height=20, yscrollcommand=scrollbary.set,
                                                 xscrollcommand=scrollbarx.set)
         scrollbary.config(command=self.inventoryTreeview.yview)
@@ -518,15 +576,17 @@ class InventoryView():
         self.inventoryTreeview.heading('Description', text="Descrtiption", anchor=CENTER)
         self.inventoryTreeview.heading('Quantity', text="Quantity", anchor=CENTER)
         self.inventoryTreeview.heading('Unit', text="Unit", anchor=CENTER)
-        
+        self.inventoryTreeview.heading('Amount', text="Amount", anchor=CENTER)
+         
 
 
         self.inventoryTreeview.column('#0', stretch=NO, minwidth=0, width=0, anchor='e')
-        self.inventoryTreeview.column('#1', stretch=NO, minwidth=0, width=100, anchor='center')
-        self.inventoryTreeview.column('#2', stretch=NO, minwidth=0, width=100, anchor='sw')
+        self.inventoryTreeview.column('#1', stretch=NO, minwidth=0, width=70, anchor='center')
+        self.inventoryTreeview.column('#2', stretch=NO, minwidth=0, width=70, anchor='sw')
         self.inventoryTreeview.column('#3', stretch=NO, minwidth=0, width=150, anchor='sw')
         self.inventoryTreeview.column('#4', stretch=NO, minwidth=0, width=150, anchor='e')
-        self.inventoryTreeview.column('#5', stretch=NO, minwidth=0, width=150, anchor='e')
+        self.inventoryTreeview.column('#5', stretch=NO, minwidth=0, width=100, anchor='e')
+        self.inventoryTreeview.column('#6', stretch=NO, minwidth=0, width=100, anchor='e')
         
        
     
@@ -602,9 +662,10 @@ class InventoryView():
             self.description_view = i[3]  
             self.quantity_view = i[4] 
             self.unit_view = i[6]
+            self.stockamount_view ='{:,.2f}'.format(i[7])
 
             self.inventoryTreeview.insert('', 'end', values=(self.productID_view,self.brand_view,
-                                self.description_view,self.quantity_view,self.unit_view))
+                                self.description_view,self.quantity_view,self.unit_view,self.stockamount_view))
                
 
 
@@ -1034,6 +1095,13 @@ def dashboard():
 #============================================================= menu Bar=================================================
     c = inventoryController(InventoryView())
     insert_inventory = insert_inventoryController(Insert_purchasesView())
+    # from inventoryView import Inventory,Controller # calling inventoryview.py
+    # c = Controller(Inventory())
+
+    # from insertpurchase import View2,insert_inventoryController2,Insert_purchasesView2
+    # insert_inventory = insert_inventoryController2(Insert_purchasesView2())
+
+
     menubar = Menu(reportFrame)
     filemenu = Menu(menubar, tearoff=0)
     filemenu2 = Menu(menubar, tearoff=0)

@@ -175,12 +175,12 @@ class Database(object):
         """This function is for queryon to invenoty Database with parameters of product inv."""
         Database.DATABASE._open_connection()
         try:
-            data = ('UPDATE inventory_onhand SET quantity = "'+quantity+'", time_update = %s\
-                            WHERE product_id = "'+product_id+'" '    
-                    "VALUES(%s)")
-            val = (dateTime_update)
+            data = ('UPDATE inventory_onhand SET quantity = %s, time_update = %s\
+                            WHERE product_id = %s')    
+                   
+            val = (quantity,dateTime_update,product_id)
 
-            cursor.execute(data,(val,))
+            cursor.execute(data,val)
             # return cursor.fetchall()
         
         except Exception as ex:
@@ -211,6 +211,22 @@ class Database(object):
             print("Error", f"Error due to :{str(ex)}")
         finally:
 
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
+
+    @staticmethod
+    def select_all_from_purchase():
+        """This function is for queryon to invenoty Database with parameters of product inv."""
+        Database.DATABASE._open_connection()
+        try:
+            data = ('SELECT * FROM purchases')
+
+            cursor.execute(data)
+            return cursor.fetchall()
+        
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
             Database.DATABASE.commit()
             Database.DATABASE.close()
 
