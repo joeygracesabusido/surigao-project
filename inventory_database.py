@@ -44,8 +44,41 @@ class Database(object):
         # finally:
         #     Database.DATABASE.commit()
         #     Database.DATABASE.close()
+        # try: 
+        #     cursor.execute(
+        #         """CREATE TABLE IF NOT EXISTS purchases (id INT AUTO_INCREMENT PRIMARY KEY,
+        #                     transDate Date,
+        #                     mris_no VARCHAR(100),
+        #                     invoice_no VARCHAR(100), 
+        #                     product_id VARCHAR(100), 
+        #                     brand VARCHAR(100),
+        #                     description VARCHAR(250),
+        #                     quantity DECIMAL(9,2),
+        #                     price DECIMAL(9,2),
+        #                     stockValue DECIMAL(9,2) GENERATED ALWAYS AS (quantity*price) STORED,
+        #                     category VARCHAR(300),
+        #                     date_credited date,
+        #                     time_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        #                     INDEX (category),
+        #                     INDEX (product_id),
+        #                     CONSTRAINT FK_categoryInsert FOREIGN KEY (category)
+        #                     REFERENCES category(category) ON UPDATE CASCADE ON DELETE CASCADE,
+        #                     CONSTRAINT FK_product_id FOREIGN KEY (product_id)
+        #                     REFERENCES inventory_onhand(product_id) ON UPDATE CASCADE ON DELETE CASCADE
+        #                     )ENGINE = InnoDB;
+        #                                 """)
+                    
+            
+                            
+        # except Exception as ex:
+        #     print("Error", f"Error due to :{str(ex)}")
+
+        # finally:
+        #     Database.DATABASE.commit()
+        #     Database.DATABASE.close()
 
 
+# this is to insert record for inventory_onhand Database
     @staticmethod
     def insert_inventoryOnhand(product_id,brand,description,
                                 quantity,price,date,category,unit):
@@ -137,3 +170,49 @@ class Database(object):
         finally:
             Database.DATABASE.commit()
             Database.DATABASE.close()
+    @staticmethod
+    def update_inventory_onhand(product_id,quantity,dateTime_update):
+        """This function is for queryon to invenoty Database with parameters of product inv."""
+        Database.DATABASE._open_connection()
+        try:
+            data = ('UPDATE inventory_onhand SET quantity = "'+quantity+'", time_update = %s\
+                            WHERE product_id = "'+product_id+'" '    
+                    "VALUES(%s)")
+            val = (dateTime_update)
+
+            cursor.execute(data,(val,))
+            # return cursor.fetchall()
+        
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
+
+# this is for Table purchases in the LD Surigao database
+    @staticmethod
+    def insert_purchases(transDate,mris_no,invoice_no,product_id,brand,description,
+                                quantity,price,date,category,unit):
+        """This is to insert to data to  purchases  Table"""
+        Database.DATABASE._open_connection() # to open database connection
+
+        try:
+           
+            data = ( "INSERT INTO purchases (transDate,mris_no,invoice_no,product_id,brand,\
+                                description,quantity,price,date_credited,category,unit)"
+                    "VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
+            val = (transDate,mris_no,invoice_no,product_id,brand,description,quantity,
+                            price,date,category,unit)
+            #                  
+            # cursor.execute(data)              
+            cursor.execute(data,val) 
+           
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
+
+
+# Database.initialize()

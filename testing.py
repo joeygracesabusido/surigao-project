@@ -3,6 +3,8 @@ from dataclasses import dataclass
 import mysql.connector
 from tabulate import tabulate
 
+from datetime import date, datetime
+
 mydb = mysql.connector.connect(
                                 host="192.46.225.247",
                                 user="joeysabusido",
@@ -325,8 +327,48 @@ def search_inventory():
     for i in myresult:
         brandSearch = i[2]
         print(brandSearch)
-        
-        
+
+
+def testingInsertOne():
+    from inventory_database import Database
+    Database.initialize()
+    today = date.today()
+    dateTime = datetime.now()
+    transDate_insert = input('Enter Date: ')
+    mris_no_insert = input('Enter mris No: ')
+    invoice_no_insert = input('Enter invoice: ')
+    productID_Insert = input('Enter product ID: ')
+    brand_inv_Insert = input('Enter Date: ')
+    description_insert = input('Enter description: ')
+    quantity_insert = input('Enter Quantity: ')
+    price_insert = input('Enter price: ')
+    categoryInsert = input('Enter Category: ')
+    unitInsert = input('Enter Unit: ')
+    date_insert = today
+
+    myresult = Database.select_One_from_inventoryData(productID_Insert)
+    totalQuantity_update = 0
+    for i in myresult:
+        quantitySearch = i[4]
+        totalQuantity_update = float(quantity_insert) + float(quantitySearch)
+        totalQuantity_update2 = str(totalQuantity_update)
+    if mris_no_insert =='' or invoice_no_insert=='' or productID_Insert =='' or brand_inv_Insert ==''\
+                    or description_insert=='' or quantity_insert=='' or price_insert==''\
+                        or categoryInsert =='' or unitInsert =='':
+        print('Please fill up  blank entry field/s ')
+    else:
+        Database.insert_purchases(transDate=transDate_insert, mris_no=mris_no_insert,invoice_no=invoice_no_insert,
+                                product_id=productID_Insert,brand=brand_inv_Insert,
+                                description=description_insert,quantity=quantity_insert,
+                                price=price_insert,date=date_insert,category=categoryInsert,unit=unitInsert)
+        print('Your data has been Save')
+
+        try:
+            Database.update_inventory_onhand(productID_Insert,totalQuantity_update2,dateTime)
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+
+testingInsertOne()        
 # inventory_treevie_list()
     # data = []
     # for x in agg_result:
@@ -338,4 +380,4 @@ def search_inventory():
 # report_sales_Inventory()
 # selection()
 
-search_inventory()
+# search_inventory()

@@ -14,7 +14,7 @@ from PIL import Image, ImageTk
 import PIL.Image
 import datetime as dt
 
-from datetime import date
+from datetime import date, datetime
 
 mydb = mysql.connector.connect(
             host="192.46.225.247",
@@ -94,7 +94,15 @@ root.config(bg="cyan")
 load = PIL.Image.open("image\login.png")
 load =load.resize((150, 125), PIL.Image.ANTIALIAS)
 logo_icon = ImageTk.PhotoImage(load)
+#==============================================Clear Midform======================================================
+def clearFrame():
+    # destroy all widgets from frame
+    for widget in MidViewForm9.winfo_children():
+        widget.destroy()
 
+    # this will clear frame and frame will be empty
+    # if you want to hide the empty panel then
+    MidViewForm9.pack_forget()
 #==============================================Inventory Frame ====================================================
 def inve_category():
     """This function is for Displaying inventory category"""
@@ -112,17 +120,21 @@ class insert_inventoryController():
         self.view = view
 
     def start(self):# this is to start up Invenotry View
+        clearFrame()
         self.view.set_up(self)
 
     def click_inventorySearch(self):
         # self.view.clear_inputs()
         self.view.search_inventory()
+    def clcik_save_inventoryBtn(self):
+        self.view.insertPurchases()
 
 class Insert_purchasesView():
     """This is for insert Inventory View"""
     def set_up(self,controller):
-        self.insert_inventoryFrame = Frame(MidViewForm9, width=1100, height=550, bd=2, bg='gray', relief=SOLID)
-        self.insert_inventoryFrame.place(x=170, y=8)
+        
+        self.insert_inventoryFrame = Frame(MidViewForm9, width=1250, height=550, bd=2, bg='gray', relief=SOLID)
+        self.insert_inventoryFrame.place(x=20, y=8)
 
 
         self.trans_date_lbl = Label(self.insert_inventoryFrame, text='Date', width=15, height=1, bg='yellow', fg='black',
@@ -215,10 +227,14 @@ class Insert_purchasesView():
 
         self.btn_search = Button(self.insert_inventoryFrame, text='Search', bd=2, bg='blue', fg='white',
                               font=('arial', 10), width=10, height=1,command=controller.click_inventorySearch)
-        self.btn_search.place(x=280, y=105)
+        self.btn_search.place(x=270, y=105)
+
+        self.btn_save_purchase = Button(self.insert_inventoryFrame, text='Save', bd=2, bg='blue', fg='white',
+                              font=('arial', 10), width=10, height=1,command=controller.clcik_save_inventoryBtn)
+        self.btn_save_purchase.place(x=10, y=350)
 
         self.inventoryTreeview_form = Frame(self.insert_inventoryFrame, width=700, height=10)
-        self.inventoryTreeview_form.place(x=410, y=40)
+        self.inventoryTreeview_form.place(x=370, y=40)
 
 
         # This is for Tree view frame for Insert Purchases
@@ -270,6 +286,7 @@ class Insert_purchasesView():
         self.brand_inv.delete(0, END)
         self.descrtip_inv_entry.delete('1.0', END)
         self.price_inv.delete(0, END)
+        self.unit_inv.delete(0, END)
 
 
     def search_inventory(self):
@@ -285,7 +302,8 @@ class Insert_purchasesView():
             self.brandSearch = i[2]
             self.descriptionSearch = i[3]
             self.priceSearch = i[5]
-            self.categorySearch = i[7]
+            self.unit_invSearch = i[6]
+            self.categorySearch = i[8]
             
 
             self.product_id_entry.delete(0, END)
@@ -297,15 +315,77 @@ class Insert_purchasesView():
             self.descrtip_inv_entry.delete('1.0', END)
             self.descrtip_inv_entry.insert('1.0',(self.descriptionSearch))
 
+            self.unit_inv.delete(0, END)
+            self.unit_inv.insert(0, (self.unit_invSearch))
+
+            self.categoryEntry.delete(0, END)
+            self.categoryEntry.insert(0,(self.categorySearch))
+
+
             self.price_inv.delete(0, END)
             self.price_inv.insert(0,(self.priceSearch))
+
+    def insertPurchases(self):
+        """This function is for inserting data to purchases Table using Front End"""
+        
+        from inventory_database import Database
+        Database.initialize()
+        today = date.today()
+        dateTime = datetime.now()
+        transDate_insert = self.trans_date_entry.get()
+        mris_no_insert = self.mris_entry.get()
+        invoice_no_insert = self.mris_entry.get()
+        productID_Insert = self.product_id_entry.get()
+        brand_inv_Insert = self.brand_inv.get()
+        description_insert = self.descrtip_inv_entry.get('1.0', 'end-1c')
+        quantity_insert = self.quantity_inv.get()
+        price_insert = self.price_inv.get()
+        categoryInsert = self.categoryEntry.get()
+        unitInsert = self.unit_inv.get()
+        date_insert = today
+
+        myresult = Database.select_One_from_inventoryData(productID_Insert)
+        totalQuantity_update = 0
+        for i in myresult:
+            quantitySearch = i[4]
+            totalQuantity_update = float(quantity_insert) + float(quantitySearch)
+            totalQuantity_update2 = str(totalQuantity_update)
+        if mris_no_insert =='' or invoice_no_insert=='' or productID_Insert =='' or brand_inv_Insert ==''\
+                        or description_insert=='' or quantity_insert=='' or price_insert==''\
+                            or categoryInsert =='' or unitInsert =='':
+            messagebox.showinfo('Please fill up  blank entry field/s ')
+        else:
+            Database.insert_purchases(transDate=transDate_insert, mris_no=mris_no_insert,invoice_no=invoice_no_insert,
+                                    product_id=productID_Insert,brand=brand_inv_Insert,
+                                    description=description_insert,quantity=quantity_insert,
+                                    price=price_insert,date=date_insert,category=categoryInsert,unit=unitInsert)
+            messagebox.showinfo('Your data has been Save')
+
+            try:
+                Database.update_inventory_onhand(productID_Insert,totalQuantity_update2,dateTime)
+            except Exception as ex:
+                messagebox.showerror("Error", f"Error due to :{str(ex)}")
+
+
+
+
+    def clearFrame(self):
+        # destroy all widgets from frame
+        for widget in MidViewForm9.winfo_children():
+            widget.destroy()
+
+        # this will clear frame and frame will be empty
+        # if you want to hide the empty panel then
+        MidViewForm9.pack_forget()
 
 class inventoryController():
     def __init__(self,view):
         self.view = view
 
     def start(self):# this is to start up Invenotry View
+        clearFrame()
         self.view.set_up(self) 
+        
 
 
     def handle_clear_entry_inventory(self):
