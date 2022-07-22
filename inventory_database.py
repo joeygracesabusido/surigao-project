@@ -156,6 +156,41 @@ class Database(object):
             Database.DATABASE.close()
 
     @staticmethod
+    def select_all_from_inventoryData_withCategory(category):
+        """This function is for querying to inventory Database with out parameters"""
+        Database.DATABASE._open_connection()
+        try:
+            data = ('SELECT * FROM inventory_onhand where category ="'+category+'"')
+
+            cursor.execute(data)
+            return cursor.fetchall()
+        
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
+
+    @staticmethod
+    def select_sum_inventoryData_withCategory(category):
+        """This function is for querying to inventory Database with out parameters"""
+        Database.DATABASE._open_connection()
+        try:
+            data = ('SELECT category sum(quantity)as TotalQuantity, \
+                            sum(stockValue) as TotalAmount\
+                         FROM inventory_onhand where category ="'+category+'" \
+                         GROUP by category')
+
+            cursor.execute(data)
+            return cursor.fetchall()
+        
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
+
+    @staticmethod
     def select_One_from_inventoryData(product_id):
         """This function is for queryon to invenoty Database with parameters of product inv."""
         Database.DATABASE._open_connection()
