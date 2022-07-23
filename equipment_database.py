@@ -25,7 +25,8 @@ class Database(object):
                                     purchase_price VARCHAR(100), \
                                         chases_number VARCHAR(100),\
                                             plate_number VARCHAR(50),\
-                                                date_purchase date DEFAULT NULL)")
+                                                date_purchase date DEFAULT NULL, \
+                                               UNIQUE (equipment_id))ENGINE = InnoDB;")
         except Exception as ex:
             print("Error", f"Error due to :{str(ex)}")
         finally:
@@ -164,4 +165,4 @@ class Database(object):
             Database.DATABASE.commit()
             Database.DATABASE.close()
 
-    
+# Database.initialize()  

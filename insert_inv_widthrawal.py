@@ -71,7 +71,7 @@ class Insert_purchasesView2(View2):
         width = 1250
         height = 600
         self.root = Tk()
-        self.root.title("Inventory Insert")
+        self.root.title("Parts Withdrawal")
        
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
@@ -81,31 +81,21 @@ class Insert_purchasesView2(View2):
         self.root.resizable = False
         self.root.config(bg="black")
         
-        self.insert_inventoryFrame = Frame(self.root, width=820, height=550, bd=2, bg='gray', relief=SOLID)
-        self.insert_inventoryFrame.place(x=420, y=30)
+        # self.insert_inventoryFrame = Frame(self.root, width=820, height=575, bd=2, bg='gray', relief=SOLID)
+        # self.insert_inventoryFrame.place(x=420, y=30)
 
         
         self.trans_date_lbl = Label(self.root, text='Date', width=15, height=1, bg='yellow', fg='black',
                                font=('Arial', 10), anchor='e')
-        self.trans_date_lbl .place(x=10, y=15)
+        self.trans_date_lbl .place(x=10, y=40)
 
         
         self.trans_date_entry  = DateEntry(self.root, width=15, background='darkblue', date_pattern='yyyy-MM-dd',
                                     foreground='white', borderwidth=2, padx=10, pady=10)
-        self.trans_date_entry.place(x=150, y=15)
+        self.trans_date_entry.place(x=150, y=40)
         self.trans_date_entry.configure(justify='center')
 
-        self.mris_lbl = Label(self.root, text='MRIS no.:', width=15, height=1, bg='yellow', fg='black',
-                          font=('Arial', 10), anchor='e')
-        self.mris_lbl.place(x=10, y=45)
-
-    
-        self.mris_entry = Entry(self.root, width=15, font=('Arial', 10))
-        self.mris_entry.place(x=150, y=45)
-
-        self.invoice_lbl = Label(self.root, text='Invoice no.:', width=15, height=1, bg='yellow', fg='black',
-                          font=('Arial', 10), anchor='e')
-        self.invoice_lbl.place(x=10, y=75)
+        
 
     
         self.invoice_entry = Entry(self.root, width=15, font=('Arial', 10))
@@ -171,6 +161,19 @@ class Insert_purchasesView2(View2):
         self.categoryEntry = ttk.Combobox(self.root, width=20,font=('Arial', 10))
         self.categoryEntry['values'] = self.inve_category()
         self.categoryEntry.place(x=150, y=315)
+        
+        
+        self.mris_lbl = Label(self.root, text='MRIS no.:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.mris_lbl.place(x=10, y=345)
+
+    
+        self.mris_entry = Entry(self.root, width=15, font=('Arial', 10))
+        self.mris_entry.place(x=150, y=345)
+
+        self.invoice_lbl = Label(self.root, text='Invoice no.:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.invoice_lbl.place(x=10, y=75)
 
 
         self.btn_search = Button(self.root, text='Search', bd=2, bg='blue', fg='white',
@@ -189,7 +192,7 @@ class Insert_purchasesView2(View2):
         # self.thread = Thread(target=self.inventory_treevie_list)
         # self.thread.start()
 
-        self.inventoryTreeview_form = Frame(self.insert_inventoryFrame, width=700, height=20)
+        self.inventoryTreeview_form = Frame(self.root, width=700, height=20)
         self.inventoryTreeview_form.place(x=10, y=10)
 
         # this is for search fields
@@ -215,7 +218,7 @@ class Insert_purchasesView2(View2):
         self.inventoryTreeview = ttk.Treeview(self.inventoryTreeview_form,
                                                 columns=('Date','Product ID','Brand',
                                                  'Description','Quantity','Price','Amount','Balance'),
-                                                selectmode="extended", height=30, yscrollcommand=scrollbary.set,
+                                                selectmode="extended", height=25, yscrollcommand=scrollbary.set,
                                                 xscrollcommand=scrollbarx.set)
         scrollbary.config(command=self.inventoryTreeview.yview)
         scrollbary.pack(side=RIGHT, fill=Y)
