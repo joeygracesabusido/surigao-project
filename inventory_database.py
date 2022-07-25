@@ -77,6 +77,44 @@ class Database(object):
         #     Database.DATABASE.commit()
         #     Database.DATABASE.close()
 
+        # try: 
+        #     cursor.execute(
+        #         """CREATE TABLE IF NOT EXISTS inventory_withdrawal (id INT AUTO_INCREMENT PRIMARY KEY,
+        #                     transDate Date,
+        #                     product_id VARCHAR(100), 
+        #                     brand VARCHAR(100),
+        #                     description VARCHAR(250),
+        #                     quantity DECIMAL(9,2),
+        #                     price DECIMAL(9,2),
+        #                     stockValue DECIMAL(9,2) GENERATED ALWAYS AS (quantity*price) STORED,
+        #                     category VARCHAR(300),
+        #                     widthrawal_slpt VARCHAR(100),
+        #                     requestedBy VARCHAR(100),
+        #                     equipment VARCHAR(100), 
+        #                     unit VARCHAR(100),
+        #                     date_credited date,
+        #                     time_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        #                     INDEX (category),
+        #                     INDEX (product_id),
+        #                     INDEX (equipment),
+        #                     CONSTRAINT FK_categorywidthraw FOREIGN KEY (category)
+        #                     REFERENCES category(category) ON UPDATE CASCADE ON DELETE CASCADE,
+        #                     CONSTRAINT FK_product_id_witd FOREIGN KEY (product_id)
+        #                     REFERENCES inventory_onhand(product_id) ON UPDATE CASCADE ON DELETE CASCADE,
+        #                     CONSTRAINT FK_equipment_id FOREIGN KEY (equipment)
+        #                     REFERENCES equipment(equipment_id) ON UPDATE CASCADE ON DELETE CASCADE
+        #                     )ENGINE = InnoDB;
+        #                                 """)
+                    
+            
+                            
+        # except Exception as ex:
+        #     print("Error", f"Error due to :{str(ex)}")
+
+        # finally:
+        #     Database.DATABASE.commit()
+        #     Database.DATABASE.close()
+
 
 # this is to insert record for inventory_onhand Database
     @staticmethod
@@ -94,7 +132,7 @@ class Database(object):
                             price,date,category,unit)
             #                  
             # cursor.execute(data)              
-            cursor.execute(data,val) 
+            cursor.execute(data,(val,)) 
            
         except Exception as ex:
             print("Error", f"Error due to :{str(ex)}")
@@ -263,6 +301,91 @@ class Database(object):
             print("Error", f"Error due to :{str(ex)}")
         finally:
             Database.DATABASE.commit()
+            Database.DATABASE.close()
+
+    # this parts is for inventory withdrawal
+
+    @staticmethod
+    def insert_withdrawal_inve(transDate,product_id,brand,description,
+                                quantity,price,date,category,unit,
+                                widthrawal_slpt,requestedBy,equipment):
+        """This function is for inserting Data to inventory withdrawal"""
+        Database.DATABASE._open_connection() # to open database connection
+
+        try:
+           
+            data = ( "INSERT INTO inventory_withdrawal (transDate,product_id,brand,\
+                                description,quantity,price,date_credited,category,\
+                                    unit,widthrawal_slpt,requestedBy,equipment)"
+                    "VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
+            val = (transDate,product_id,brand,description,quantity,
+                            price,date,category,unit,
+                            widthrawal_slpt,requestedBy,equipment)
+            #                  
+            # cursor.execute(data)              
+            cursor.execute(data,val) 
+           
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
+
+    @staticmethod
+    def select_all_withdrawal(dateFrom,dateTo):
+        """This is for querying all data for withdrawal"""
+        Database.DATABASE._open_connection()
+        try:
+            data = ('SELECT * FROM inventory_withdrawal \
+                        WHERE transDate BETWEEN %s AND %s ')
+            val = (dateFrom,dateTo)
+
+            cursor.execute(data,val)
+            return cursor.fetchall()
+        
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
+
+    @staticmethod
+    def select_with_parameters_Date_equipment(datefrom,dateto,equipment,):
+        """This is for querying with parameters of datefrom,dateto,equipment"""
+        Database.DATABASE._open_connection()
+        try:
+            data = ('SELECT * from inventory_withdrawal \
+                            WHERE transDate BETWEEN %s AND %s AND equipment = %s')    
+                   
+            val = (datefrom,dateto,equipment)
+
+            cursor.execute(data,val)
+            return cursor.fetchall()
+        
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
+
+    @staticmethod
+    def select_with_equipment(equipment):
+        """This is for querying with parameters of datefrom,dateto,equipment"""
+        Database.DATABASE._open_connection()
+        try:
+            data = ('SELECT * from inventory_withdrawal \
+                            WHERE equipment = "'+equipment+'"')    
+                   
+            val = (equipment)
+
+            cursor.execute(data)
+            return cursor.fetchall()
+        
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+           
             Database.DATABASE.close()
 
 

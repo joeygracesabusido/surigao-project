@@ -368,6 +368,34 @@ def testingInsertOne():
         except Exception as ex:
             print("Error", f"Error due to :{str(ex)}")
 
+def testing_selectWith():
+    """This function is for querying """
+    from inventory_database import Database
+    Database.initialize()
+    # equipmentSearch = input('Enter Equipment ID: ')
+
+    # myresult = Database.select_with_equipment(equipment=equipmentSearch)
+    # print(myresult)
+    # for i in myresult:
+    #     transDate_view = i[1]
+    #     print(transDate_view)
+
+   
+    # data = ('SELECT * from inventory_withdrawal \
+    #                     WHERE equipment = "'+equipmentSearch+'"')    
+    equipmentSearch = input('Enter Equipment ID: ')   
+    date1 = input('Enter Date1: ') 
+    date2 = input('Enter Date 2: ')       
+    myresult = Database.select_with_equipment(equipment=equipmentSearch)
+
+    
+    
+    for i in myresult:
+        transDate_view = i[1]
+        print(transDate_view)
+
+
+testing_selectWith()
 #testingInsertOne()        
 # inventory_treevie_list()
     # data = []

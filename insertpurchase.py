@@ -300,7 +300,7 @@ class Insert_purchasesView2(View2):
         dateTime = datetime.now()
         transDate_insert = self.trans_date_entry.get()
         mris_no_insert = self.mris_entry.get()
-        invoice_no_insert = self.mris_entry.get()
+        invoice_no_insert = self.invoice_entry.get()
         productID_Insert = self.product_id_entry.get()
         brand_inv_Insert = self.brand_inv.get()
         description_insert = self.descrtip_inv_entry.get('1.0', 'end-1c')

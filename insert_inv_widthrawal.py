@@ -29,7 +29,7 @@ cursor = mydb.cursor()
 
 
 
-class View2(ABC):
+class Viewwithdrawal(ABC):
     def setup(self,controller):
         pass
     def clear_inputs(self):
@@ -42,15 +42,17 @@ class View2(ABC):
         pass
     def inventory_treevie_list(self):
         pass
+    def clear_inputs(self):
+        pass
 
-class insert_inventoryController2():
-    def __init__(self,view:View2):
+class insert_withdrawalController():
+    def __init__(self,view:Viewwithdrawal):
         self.view = view
 
     def start(self):# this is to start up Invenotry View
         
         self.view.set_up(self)
-        self.view.inve_category()
+        # self.view.inve_category()
         self.view.start_main_loop()
         # self.view.inve_category()
         # self.view.inventory_treeview_display()
@@ -61,11 +63,13 @@ class insert_inventoryController2():
         self.view.search_inventory()
     def clcik_save_inventoryBtn(self):
         self.view.insertPurchases()
+        self.view.inventory_treeview_display()
+        # self.clear_inputs()
 
     def clickBtn_display(self):
         self.view.inventory_treeview_display()
 
-class Insert_purchasesView2(View2):
+class Insert_withdrawal(Viewwithdrawal):
     """This is for insert Inventory View"""
     def set_up(self,controller):
         width = 1250
@@ -78,7 +82,7 @@ class Insert_purchasesView2(View2):
         x = (screen_width / 2) - (width / 2)
         y = (screen_height / 2) - (height / 2)
         self.root.geometry("%dx%d+%d+%d" % (width, height, x, y))
-        self.root.resizable = False
+        self.root.resizable(False,False)
         self.root.config(bg="black")
         
         # self.insert_inventoryFrame = Frame(self.root, width=820, height=575, bd=2, bg='gray', relief=SOLID)
@@ -94,12 +98,6 @@ class Insert_purchasesView2(View2):
                                     foreground='white', borderwidth=2, padx=10, pady=10)
         self.trans_date_entry.place(x=150, y=40)
         self.trans_date_entry.configure(justify='center')
-
-        
-
-    
-        self.invoice_entry = Entry(self.root, width=15, font=('Arial', 10))
-        self.invoice_entry.place(x=150, y=75)
 
 
 
@@ -163,17 +161,28 @@ class Insert_purchasesView2(View2):
         self.categoryEntry.place(x=150, y=315)
         
         
-        self.mris_lbl = Label(self.root, text='MRIS no.:', width=15, height=1, bg='yellow', fg='black',
+        self.request_lbl = Label(self.root, text='Withdral Form No.:', width=15, height=1, bg='yellow', fg='black',
                           font=('Arial', 10), anchor='e')
-        self.mris_lbl.place(x=10, y=345)
+        self.request_lbl.place(x=10, y=345)
 
     
-        self.mris_entry = Entry(self.root, width=15, font=('Arial', 10))
-        self.mris_entry.place(x=150, y=345)
+        self.widthrawal_entry = Entry(self.root, width=15, font=('Arial', 10))
+        self.widthrawal_entry.place(x=150, y=345)
 
-        self.invoice_lbl = Label(self.root, text='Invoice no.:', width=15, height=1, bg='yellow', fg='black',
+        self.requestedBy_lbl = Label(self.root, text='Requested By:', width=15, height=1, bg='yellow', fg='black',
                           font=('Arial', 10), anchor='e')
-        self.invoice_lbl.place(x=10, y=75)
+        self.requestedBy_lbl.place(x=10, y=375)
+        self.requestedBy_entry = Entry(self.root, width=25, font=('Arial', 10))
+        self.requestedBy_entry.place(x=150, y=375)
+
+
+        self.equipment_lbl = Label(self.root, text='Equipment:', width=15, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.equipment_lbl.place(x=10, y=405)
+
+        self.equipment_entry = ttk.Combobox(self.root, width=20,font=('Arial', 10))
+        self.equipment_entry['values'] = self.equipment_list()
+        self.equipment_entry.place(x=150, y=405)
 
 
         self.btn_search = Button(self.root, text='Search', bd=2, bg='blue', fg='white',
@@ -182,18 +191,38 @@ class Insert_purchasesView2(View2):
 
         self.btn_save_purchase = Button(self.root, text='Save', bd=2, bg='blue', fg='white',
                               font=('arial', 10), width=10, height=1,command=controller.clcik_save_inventoryBtn)
-        self.btn_save_purchase.place(x=10, y=350)
+        self.btn_save_purchase.place(x=10, y=475)
 
+    # this is for searching frame 
+
+        self.dateFrom  = DateEntry(self.root, width=15, background='darkblue', date_pattern='yyyy-MM-dd',
+                                    foreground='white', borderwidth=2, padx=10, pady=10)
+        self.dateFrom.place(x=370, y=5)
+        self.dateFrom.configure(justify='center')
+
+        self.to_lbl = Label(self.root, text='To:', width=7, height=1, bg='yellow', fg='black',
+                          font=('Arial', 10), anchor='e')
+        self.to_lbl.place(x=500, y=5)
+
+        self.dateTo  = DateEntry(self.root, width=15, background='darkblue', date_pattern='yyyy-MM-dd',
+                                    foreground='white', borderwidth=2, padx=10, pady=10)
+        self.dateTo.place(x=575, y=5)
+        self.dateTo.configure(justify='center')
+
+
+        self.equipment_entry_search = ttk.Combobox(self.root, width=20,font=('Arial', 10))
+        self.equipment_entry_search['values'] = self.equipment_list()
+        self.equipment_entry_search.place(x=725, y=5)
 
         self.btn_display = Button(self.root, text='Display', bd=2, bg='blue', fg='white',
                               font=('arial', 10), width=10, height=1,command=controller.clickBtn_display)
-        self.btn_display.place(x=1100, y=5)
+        self.btn_display.place(x=950, y=5)
 
         # self.thread = Thread(target=self.inventory_treevie_list)
         # self.thread.start()
 
         self.inventoryTreeview_form = Frame(self.root, width=700, height=20)
-        self.inventoryTreeview_form.place(x=10, y=10)
+        self.inventoryTreeview_form.place(x=370, y=40)
 
         # this is for search fields
 
@@ -217,7 +246,8 @@ class Insert_purchasesView2(View2):
         
         self.inventoryTreeview = ttk.Treeview(self.inventoryTreeview_form,
                                                 columns=('Date','Product ID','Brand',
-                                                 'Description','Quantity','Price','Amount','Balance'),
+                                                 'Description','Quantity','Price','Amount','Balance',
+                                                 'Equipment'),
                                                 selectmode="extended", height=25, yscrollcommand=scrollbary.set,
                                                 xscrollcommand=scrollbarx.set)
         scrollbary.config(command=self.inventoryTreeview.yview)
@@ -232,6 +262,7 @@ class Insert_purchasesView2(View2):
         self.inventoryTreeview.heading('Price', text="Price", anchor=CENTER)
         self.inventoryTreeview.heading('Amount', text="Amount", anchor=CENTER)
         self.inventoryTreeview.heading('Balance', text="Balance", anchor=CENTER)
+        self.inventoryTreeview.heading('Equipment', text="Equipment", anchor=CENTER)
         
 
 
@@ -239,11 +270,12 @@ class Insert_purchasesView2(View2):
         self.inventoryTreeview.column('#1', stretch=NO, minwidth=0, width=70, anchor='center')
         self.inventoryTreeview.column('#2', stretch=NO, minwidth=0, width=80, anchor='sw')
         self.inventoryTreeview.column('#3', stretch=NO, minwidth=0, width=125, anchor='sw')
-        self.inventoryTreeview.column('#4', stretch=NO, minwidth=0, width=100, anchor='e')
-        self.inventoryTreeview.column('#5', stretch=NO, minwidth=0, width=100, anchor='e')
-        self.inventoryTreeview.column('#6', stretch=NO, minwidth=0, width=100, anchor='e')
+        self.inventoryTreeview.column('#4', stretch=NO, minwidth=0, width=125, anchor='e')
+        self.inventoryTreeview.column('#5', stretch=NO, minwidth=0, width=75, anchor='e')
+        self.inventoryTreeview.column('#6', stretch=NO, minwidth=0, width=75, anchor='e')
         self.inventoryTreeview.column('#7', stretch=NO, minwidth=0, width=100, anchor='e')
         self.inventoryTreeview.column('#8', stretch=NO, minwidth=0, width=100, anchor='e')
+        self.inventoryTreeview.column('#9', stretch=NO, minwidth=0, width=90, anchor='e')
         
        
     
@@ -251,12 +283,10 @@ class Insert_purchasesView2(View2):
     
     def clear_inputs(self):
         """This is to clear input fields"""
-        self.product_id_entry.delete(0, END)
-        self.brand_inv.delete(0, END)
-        self.descrtip_inv_entry.delete('1.0', END)
-        self.price_inv.delete(0, END)
-        self.unit_inv.delete(0, END)
-
+       
+       
+        self.quantity_inv.delete(0, END)
+        
 
     def search_inventory(self):
         """This is to search invenotry using product ID"""
@@ -302,8 +332,8 @@ class Insert_purchasesView2(View2):
         today = date.today()
         dateTime = datetime.now()
         transDate_insert = self.trans_date_entry.get()
-        mris_no_insert = self.mris_entry.get()
-        invoice_no_insert = self.mris_entry.get()
+        withdral_slpt = self.widthrawal_entry.get()
+        requestedBy = self.requestedBy_entry.get()
         productID_Insert = self.product_id_entry.get()
         brand_inv_Insert = self.brand_inv.get()
         description_insert = self.descrtip_inv_entry.get('1.0', 'end-1c')
@@ -311,23 +341,26 @@ class Insert_purchasesView2(View2):
         price_insert = self.price_inv.get()
         categoryInsert = self.categoryEntry.get()
         unitInsert = self.unit_inv.get()
+        equipmentInsert = self. equipment_entry.get()
         date_insert = today
 
         myresult = Database.select_One_from_inventoryData(productID_Insert)
         totalQuantity_update = 0
         for i in myresult:
             quantitySearch = i[4]
-            totalQuantity_update = float(quantity_insert) + float(quantitySearch)
+            totalQuantity_update = float(quantitySearch) - float(quantity_insert) 
             totalQuantity_update2 = str(totalQuantity_update)
-        if mris_no_insert =='' or invoice_no_insert=='' or productID_Insert =='' or brand_inv_Insert ==''\
+        if withdral_slpt =='' or requestedBy=='' or productID_Insert =='' or brand_inv_Insert ==''\
                         or description_insert=='' or quantity_insert=='' or price_insert==''\
-                            or categoryInsert =='' or unitInsert =='':
+                            or categoryInsert =='' or unitInsert =='' or equipmentInsert=='':
             messagebox.showinfo('Please fill up  blank entry field/s ')
         else:
-            Database.insert_purchases(transDate=transDate_insert, mris_no=mris_no_insert,invoice_no=invoice_no_insert,
-                                    product_id=productID_Insert,brand=brand_inv_Insert,
-                                    description=description_insert,quantity=quantity_insert,
-                                    price=price_insert,date=date_insert,category=categoryInsert,unit=unitInsert)
+            Database.insert_withdrawal_inve(transDate=transDate_insert,product_id=productID_Insert,
+                                    brand=brand_inv_Insert,description=description_insert,
+                                    quantity=quantity_insert,price=price_insert,
+                                    date=date_insert,category=categoryInsert,unit=unitInsert,
+                                    widthrawal_slpt=withdral_slpt,requestedBy=requestedBy,
+                                    equipment=equipmentInsert )
             messagebox.showinfo('Your data has been Save')
 
             try:
@@ -342,30 +375,61 @@ class Insert_purchasesView2(View2):
     def inventory_treevie_list(self):
         """This function is for querying for treeview for inventory Database"""
         from inventory_database import Database
-        Database.initialize()   
+        Database.initialize()  
 
-        myresult = Database.select_all_from_purchase()
+        if  self.equipment_entry_search.get() =='' :
 
-        self.Totalstockamount_view = 0
-        for i in myresult:
-            self.transDate_view = i[1]
-            self.productID_view = i[4]   
-            self.brand_view = i[5]   
-            self.description_view = i[6]  
-            self.quantity_view = i[7] 
-            self.price_view =  '{:,.2f}'.format(i[8])
-            self.Totalstockamount_view2 = i[9]
-            self.Totalstockamount_view+=self.Totalstockamount_view2
-            self.Totalstockamount_view3 = '{:,.2f}'.format(self.Totalstockamount_view)
-            self.stockamount_view = '{:,.2f}'.format(i[9])
+            myresult = Database.select_all_withdrawal(dateFrom=self.dateFrom.get(),dateTo=self.dateTo.get())
+
+            self.Totalstockamount_view = 0
+            for i in myresult:
+                self.transDate_view = i[1]
+                self.productID_view = i[2]   
+                self.brand_view = i[3]   
+                self.description_view = i[4]  
+                self.quantity_view = i[5] 
+                self.price_view =  '{:,.2f}'.format(i[6])
+                self.Totalstockamount_view2 = i[7]
+                self.Totalstockamount_view+=self.Totalstockamount_view2
+                self.Totalstockamount_view3 = '{:,.2f}'.format(self.Totalstockamount_view)
+                self.stockamount_view = '{:,.2f}'.format(i[7])
+                self.equiptment_view = i[11]
+                
             
-           
 
-            self.inventoryTreeview.insert('', 'end', values=(self.transDate_view,
-                                    self.productID_view,self.brand_view,
-                                self.description_view,self.quantity_view,
-                                self.price_view, self.stockamount_view,
-                                self.Totalstockamount_view3))
+                self.inventoryTreeview.insert('', 'end', values=(self.transDate_view,
+                                        self.productID_view,self.brand_view,
+                                    self.description_view,self.quantity_view,
+                                    self.price_view, self.stockamount_view,
+                                    self.Totalstockamount_view3,self.equiptment_view))
+
+        elif self.equipment_entry_search.get()!='' and self.dateFrom.get() !='' and self.dateTo.get() !='':
+
+            myresult = Database.select_with_parameters_Date_equipment(equipment=self.equipment_entry_search.get(),
+                                                        datefrom=self.dateFrom.get(),dateto=self.dateTo.get())
+
+            self.Totalstockamount_view = 0
+            for i in myresult:
+                self.transDate_view = i[1]
+                self.productID_view = i[2]   
+                self.brand_view = i[3]   
+                self.description_view = i[4]  
+                self.quantity_view = i[5] 
+                self.price_view =  '{:,.2f}'.format(i[6])
+                self.Totalstockamount_view2 = i[7]
+                self.Totalstockamount_view+=self.Totalstockamount_view2
+                self.Totalstockamount_view3 = '{:,.2f}'.format(self.Totalstockamount_view)
+                self.stockamount_view = '{:,.2f}'.format(i[7])
+                self.equiptment_view = i[11]
+              
+                
+            
+
+                self.inventoryTreeview.insert('', 'end', values=(self.transDate_view,
+                                        self.productID_view,self.brand_view,
+                                    self.description_view,self.quantity_view,
+                                    self.price_view, self.stockamount_view,
+                                    self.Totalstockamount_view3,self.equiptment_view))
 
     def inve_category(self):
         """This function is for Displaying inventory category"""
@@ -384,9 +448,26 @@ class Insert_purchasesView2(View2):
         
         return data
 
+    def equipment_list(self):
+        """This function is for Displaying inventory category"""
+        # from inventory_database import Database
+        # Database.initialize()
+        # agg_result = Database.select_all_category_from_category()
+        mydb._open_connection()
+        
+        cursor.execute('SELECT equipment_id FROM equipment ORDER by equipment_id ASC')
+
+        agg_result = cursor.fetchall()
+
+        data = []
+        for x in agg_result:
+            data.append(x[0])
+        
+        return data
+
     def start_main_loop(self):
     
         self.root.mainloop()
 
-c = insert_inventoryController2(Insert_purchasesView2())
-c.start()
+# c = insert_withdrawalController(Insert_withdrawal())
+# c.start()
