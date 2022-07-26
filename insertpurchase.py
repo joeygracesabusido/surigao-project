@@ -42,6 +42,8 @@ class View2(ABC):
         pass
     def inventory_treevie_list(self):
         pass
+    def clickBtn_display(self):
+        pass
 
 class insert_inventoryController2():
     def __init__(self,view:View2):
@@ -64,6 +66,8 @@ class insert_inventoryController2():
 
     def clickBtn_display(self):
         self.view.inventory_treeview_display()
+    def clickBtn_delete(self):
+        self.view.delete_record()
 
 class Insert_purchasesView2(View2):
     """This is for insert Inventory View"""
@@ -71,7 +75,7 @@ class Insert_purchasesView2(View2):
         width = 1250
         height = 600
         self.root = Tk()
-        self.root.title("Inventory Insert")
+        self.root.title("Insert Purchases")
        
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
@@ -81,8 +85,8 @@ class Insert_purchasesView2(View2):
         self.root.resizable = False
         self.root.config(bg="black")
         
-        self.insert_inventoryFrame = Frame(self.root, width=820, height=550, bd=2, bg='gray', relief=SOLID)
-        self.insert_inventoryFrame.place(x=420, y=30)
+        # self.insert_inventoryFrame = Frame(self.root, width=820, height=550, bd=2, bg='gray', relief=SOLID)
+        # self.insert_inventoryFrame.place(x=420, y=30)
 
         
         self.trans_date_lbl = Label(self.root, text='Date', width=15, height=1, bg='yellow', fg='black',
@@ -181,6 +185,10 @@ class Insert_purchasesView2(View2):
                               font=('arial', 10), width=10, height=1,command=controller.clcik_save_inventoryBtn)
         self.btn_save_purchase.place(x=10, y=350)
 
+        self.btn_delete_purchase = Button(self.root, text='Delete', bd=2, bg='red', fg='white',
+                              font=('arial', 10), width=10, height=1,command=controller.clickBtn_delete)
+        self.btn_delete_purchase.place(x=110, y=350)
+
 
         self.btn_display = Button(self.root, text='Display', bd=2, bg='blue', fg='white',
                               font=('arial', 10), width=10, height=1,command=controller.clickBtn_display)
@@ -189,8 +197,8 @@ class Insert_purchasesView2(View2):
         # self.thread = Thread(target=self.inventory_treevie_list)
         # self.thread.start()
 
-        self.inventoryTreeview_form = Frame(self.insert_inventoryFrame, width=700, height=20)
-        self.inventoryTreeview_form.place(x=10, y=10)
+        self.inventoryTreeview_form = Frame(self.root, width=700, height=20)
+        self.inventoryTreeview_form.place(x=370, y=40)
 
         # this is for search fields
 
@@ -213,14 +221,15 @@ class Insert_purchasesView2(View2):
         scrollbary = Scrollbar(self.inventoryTreeview_form, orient=VERTICAL)
         
         self.inventoryTreeview = ttk.Treeview(self.inventoryTreeview_form,
-                                                columns=('Date','Product ID','Brand',
+                                                columns=('ID','Date','Product ID','Brand',
                                                  'Description','Quantity','Price','Amount','Balance'),
-                                                selectmode="extended", height=30, yscrollcommand=scrollbary.set,
+                                                selectmode="extended", height=25, yscrollcommand=scrollbary.set,
                                                 xscrollcommand=scrollbarx.set)
         scrollbary.config(command=self.inventoryTreeview.yview)
         scrollbary.pack(side=RIGHT, fill=Y)
         scrollbarx.config(command=self.inventoryTreeview.xview)
         scrollbarx.pack(side=BOTTOM, fill=X)
+        self.inventoryTreeview.heading('ID', text="ID", anchor=CENTER)
         self.inventoryTreeview.heading('Date', text="Date", anchor=CENTER)
         self.inventoryTreeview.heading('Product ID', text="Product ID", anchor=CENTER)
         self.inventoryTreeview.heading('Brand', text="Brand", anchor=CENTER)
@@ -235,12 +244,13 @@ class Insert_purchasesView2(View2):
         self.inventoryTreeview.column('#0', stretch=NO, minwidth=0, width=0, anchor='e')
         self.inventoryTreeview.column('#1', stretch=NO, minwidth=0, width=70, anchor='center')
         self.inventoryTreeview.column('#2', stretch=NO, minwidth=0, width=80, anchor='sw')
-        self.inventoryTreeview.column('#3', stretch=NO, minwidth=0, width=125, anchor='sw')
+        self.inventoryTreeview.column('#3', stretch=NO, minwidth=0, width=80, anchor='sw')
         self.inventoryTreeview.column('#4', stretch=NO, minwidth=0, width=100, anchor='e')
         self.inventoryTreeview.column('#5', stretch=NO, minwidth=0, width=100, anchor='e')
-        self.inventoryTreeview.column('#6', stretch=NO, minwidth=0, width=100, anchor='e')
-        self.inventoryTreeview.column('#7', stretch=NO, minwidth=0, width=100, anchor='e')
-        self.inventoryTreeview.column('#8', stretch=NO, minwidth=0, width=100, anchor='e')
+        self.inventoryTreeview.column('#6', stretch=NO, minwidth=0, width=70, anchor='e')
+        self.inventoryTreeview.column('#7', stretch=NO, minwidth=0, width=70, anchor='e')
+        self.inventoryTreeview.column('#8', stretch=NO, minwidth=0, width=70, anchor='e')
+        self.inventoryTreeview.column('#9', stretch=NO, minwidth=0, width=100, anchor='e')
         
        
     
@@ -345,6 +355,7 @@ class Insert_purchasesView2(View2):
 
         self.Totalstockamount_view = 0
         for i in myresult:
+            self.Idview = i[0]
             self.transDate_view = i[1]
             self.productID_view = i[4]   
             self.brand_view = i[5]   
@@ -358,11 +369,25 @@ class Insert_purchasesView2(View2):
             
            
 
-            self.inventoryTreeview.insert('', 'end', values=(self.transDate_view,
+            self.inventoryTreeview.insert('', 'end', values=(self.Idview,self.transDate_view,
                                     self.productID_view,self.brand_view,
                                 self.description_view,self.quantity_view,
                                 self.price_view, self.stockamount_view,
                                 self.Totalstockamount_view3))
+
+    def delete_record(self):
+        from inventory_database import Database
+        Database.initialize()
+
+        self.selected = self.inventoryTreeview.focus()
+        self.values = self.inventoryTreeview.item(self.selected)
+        self.selectedItems = self.values['values']
+
+        Database.delete_one_withd_ID_purchases(id=self.selectedItems[0])
+
+        self.inventory_treeview_display()
+        
+
 
     def inve_category(self):
         """This function is for Displaying inventory category"""
@@ -385,5 +410,5 @@ class Insert_purchasesView2(View2):
     
         self.root.mainloop()
 
-c = insert_inventoryController2(Insert_purchasesView2())
-c.start()
+# c = insert_inventoryController2(Insert_purchasesView2())
+# c.start()

@@ -303,6 +303,25 @@ class Database(object):
             Database.DATABASE.commit()
             Database.DATABASE.close()
 
+    @staticmethod
+    def delete_one_withd_ID_purchases(id):
+        """This function is for delete data using id"""
+        Database.DATABASE._open_connection()
+        try:
+            data = ('DELETE from purchases \
+                            WHERE id = %s')    
+                   
+            val = (id)
+
+            cursor.execute(data,(val,))
+            return cursor.fetchall()
+        
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
+
     # this parts is for inventory withdrawal
 
     @staticmethod
@@ -388,5 +407,73 @@ class Database(object):
            
             Database.DATABASE.close()
 
+    @staticmethod
+    def update_widthrawal(transDate,product_id,brand,description,
+                                quantity,price,category,
+                                widthrawal_slpt,requestedBy,equipment,
+                                unit,time_updated,id):
+        """"This function is for updating the the record for withdrawal Table"""
+        Database.DATABASE._open_connection()
+
+        try:
+            data = ("""UPDATE inventory_withdrawal SET transDate=%s,
+                        product_id=%s,brand=%s,description=%s,quantity=%s,
+                         price=%s,category=%s,widthrawal_slpt=%s,requestedBy=%s,
+                          equipment=%s,unit=%s,time_update=%s WHERE id = %s """)
+
+            val =(transDate,product_id,brand,description,
+                    quantity,price,category,widthrawal_slpt,
+                    requestedBy,equipment,unit,time_updated,id)
+            cursor.execute(data,val)
+
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
+
+    @staticmethod
+    def search_one_withd_ID(id):
+        """This function is for querying data using id"""
+        Database.DATABASE._open_connection()
+        try:
+            data = ('SELECT * from inventory_withdrawal \
+                            WHERE id = %s')    
+                   
+            val = (id)
+
+            cursor.execute(data,(val,))
+            return cursor.fetchall()
+        
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+           
+            Database.DATABASE.close()
+
+    @staticmethod
+    def delete_one_withd_ID(id):
+        """This function is for delete data using id"""
+        Database.DATABASE._open_connection()
+        try:
+            data = ('DELETE from inventory_withdrawal \
+                            WHERE id = %s')    
+                   
+            val = (id)
+
+            cursor.execute(data,(val,))
+            return cursor.fetchall()
+        
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
+
+
 
 # Database.initialize()
+
+
+
+  

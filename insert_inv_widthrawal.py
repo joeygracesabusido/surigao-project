@@ -44,6 +44,12 @@ class Viewwithdrawal(ABC):
         pass
     def clear_inputs(self):
         pass
+    def searchID(self):
+        pass
+    def clickBtn_update(self):
+        pass
+    def clickBtn_delete(self):
+        pass
 
 class insert_withdrawalController():
     def __init__(self,view:Viewwithdrawal):
@@ -68,6 +74,18 @@ class insert_withdrawalController():
 
     def clickBtn_display(self):
         self.view.inventory_treeview_display()
+
+    def clickBtn_clear(self):
+        self.view.clear_inputs()
+
+    def clickBtn_Search(self):
+        self.view.searchID()
+
+    def clickBtn_update(self):
+        self.view.update_record()
+
+    def clickBtn_delete(self):
+        self.view.delete_record()
 
 class Insert_withdrawal(Viewwithdrawal):
     """This is for insert Inventory View"""
@@ -193,6 +211,14 @@ class Insert_withdrawal(Viewwithdrawal):
                               font=('arial', 10), width=10, height=1,command=controller.clcik_save_inventoryBtn)
         self.btn_save_purchase.place(x=10, y=475)
 
+        self.btn_update = Button(self.root, text='Update', bd=2, bg='gray', fg='white',
+                              font=('arial', 10), width=10, height=1,command=controller.clickBtn_update)
+        self.btn_update.place(x=110, y=475)
+
+        self.btn_delete = Button(self.root, text='Delete', bd=2, bg='red', fg='white',
+                              font=('arial', 10), width=10, height=1,command=controller.clickBtn_delete)
+        self.btn_delete.place(x=210, y=475)
+
     # this is for searching frame 
 
         self.dateFrom  = DateEntry(self.root, width=15, background='darkblue', date_pattern='yyyy-MM-dd',
@@ -221,15 +247,25 @@ class Insert_withdrawal(Viewwithdrawal):
         # self.thread = Thread(target=self.inventory_treevie_list)
         # self.thread.start()
 
-        self.inventoryTreeview_form = Frame(self.root, width=700, height=20)
-        self.inventoryTreeview_form.place(x=370, y=40)
+        
 
         # this is for search fields
+
+        self.searchID_entry = Entry(self.root, width=15, font=('Arial', 10))
+        self.searchID_entry.place(x=10, y=535)
+
+        self.btn_searchID = Button(self.root, text='Search ID', bd=2, bg='orange', fg='white',
+                              font=('arial', 10), width=10, height=1,command=controller.clickBtn_Search)
+        self.btn_searchID.place(x=130, y=535)
 
         
 
 
         # This is for Tree view frame for Insert Purchases
+
+        self.inventoryTreeview_form = Frame(self.root, width=700, height=20)
+        self.inventoryTreeview_form.place(x=370, y=40)
+        
         style = ttk.Style(self.root)
         style.theme_use("clam")
         style.configure("Treeview",
@@ -245,7 +281,7 @@ class Insert_withdrawal(Viewwithdrawal):
         scrollbary = Scrollbar(self.inventoryTreeview_form, orient=VERTICAL)
         
         self.inventoryTreeview = ttk.Treeview(self.inventoryTreeview_form,
-                                                columns=('Date','Product ID','Brand',
+                                                columns=('ID','Date','Product ID','Brand',
                                                  'Description','Quantity','Price','Amount','Balance',
                                                  'Equipment'),
                                                 selectmode="extended", height=25, yscrollcommand=scrollbary.set,
@@ -254,6 +290,7 @@ class Insert_withdrawal(Viewwithdrawal):
         scrollbary.pack(side=RIGHT, fill=Y)
         scrollbarx.config(command=self.inventoryTreeview.xview)
         scrollbarx.pack(side=BOTTOM, fill=X)
+        self.inventoryTreeview.heading('ID', text="ID", anchor=CENTER)
         self.inventoryTreeview.heading('Date', text="Date", anchor=CENTER)
         self.inventoryTreeview.heading('Product ID', text="Product ID", anchor=CENTER)
         self.inventoryTreeview.heading('Brand', text="Brand", anchor=CENTER)
@@ -273,19 +310,31 @@ class Insert_withdrawal(Viewwithdrawal):
         self.inventoryTreeview.column('#4', stretch=NO, minwidth=0, width=125, anchor='e')
         self.inventoryTreeview.column('#5', stretch=NO, minwidth=0, width=75, anchor='e')
         self.inventoryTreeview.column('#6', stretch=NO, minwidth=0, width=75, anchor='e')
-        self.inventoryTreeview.column('#7', stretch=NO, minwidth=0, width=100, anchor='e')
-        self.inventoryTreeview.column('#8', stretch=NO, minwidth=0, width=100, anchor='e')
-        self.inventoryTreeview.column('#9', stretch=NO, minwidth=0, width=90, anchor='e')
+        self.inventoryTreeview.column('#7', stretch=NO, minwidth=0, width=70, anchor='e')
+        self.inventoryTreeview.column('#8', stretch=NO, minwidth=0, width=70, anchor='e')
+        self.inventoryTreeview.column('#9', stretch=NO, minwidth=0, width=70, anchor='e')
+        self.inventoryTreeview.column('#10', stretch=NO, minwidth=0, width=80, anchor='e')
         
        
     
         self.inventoryTreeview.pack()
+        
     
     def clear_inputs(self):
         """This is to clear input fields"""
        
-       
+        self.product_id_entry.delete(0, END)
         self.quantity_inv.delete(0, END)
+        self.brand_inv.delete(0, END)
+        self.descrtip_inv_entry.delete('1.0', END)
+        self.price_inv.delete(0, END)
+        self.categoryEntry.delete(0, END)
+        self.unit_inv.delete(0, END)
+        self.equipment_entry.delete(0, END)
+        self.widthrawal_entry.delete(0, END)
+        self.requestedBy_entry.delete(0, END)
+        self.trans_date_entry.delete(0, END)
+        
         
 
     def search_inventory(self):
@@ -383,6 +432,7 @@ class Insert_withdrawal(Viewwithdrawal):
 
             self.Totalstockamount_view = 0
             for i in myresult:
+                self.idView = i[0]
                 self.transDate_view = i[1]
                 self.productID_view = i[2]   
                 self.brand_view = i[3]   
@@ -397,7 +447,7 @@ class Insert_withdrawal(Viewwithdrawal):
                 
             
 
-                self.inventoryTreeview.insert('', 'end', values=(self.transDate_view,
+                self.inventoryTreeview.insert('', 'end', values=(self.idView,self.transDate_view,
                                         self.productID_view,self.brand_view,
                                     self.description_view,self.quantity_view,
                                     self.price_view, self.stockamount_view,
@@ -410,6 +460,7 @@ class Insert_withdrawal(Viewwithdrawal):
 
             self.Totalstockamount_view = 0
             for i in myresult:
+                self.idView = i[0]
                 self.transDate_view = i[1]
                 self.productID_view = i[2]   
                 self.brand_view = i[3]   
@@ -425,12 +476,86 @@ class Insert_withdrawal(Viewwithdrawal):
                 
             
 
-                self.inventoryTreeview.insert('', 'end', values=(self.transDate_view,
+                self.inventoryTreeview.insert('', 'end', values=(self.idView,self.transDate_view,
                                         self.productID_view,self.brand_view,
                                     self.description_view,self.quantity_view,
                                     self.price_view, self.stockamount_view,
                                     self.Totalstockamount_view3,self.equiptment_view))
 
+    def searchID(self):
+        """This function is for Searching data using ID as parameter"""
+        from inventory_database import Database # import class from inventory_database.py
+        Database.initialize()
+
+
+        self.clear_inputs()
+        Idsearch = self.searchID_entry.get()
+        myresult = Database.search_one_withd_ID(id=Idsearch)
+
+        for i in myresult:
+
+            self.idView = i[0]
+            self.transDate_view = i[1]
+            self.productID_view = i[2]   
+            self.brand_view = i[3]   
+            self.description_view = i[4]  
+            self.quantity_view = i[5] 
+            self.price_view =  i[6]
+            self.categoryInsert = i[8]
+            self.withdral_slpt = i[9]
+            self.requestedBy = i[10]
+            self.equiptment_view = i[11]
+            self.unitInsert = i[12]
+
+            self.trans_date_entry.insert(0,self.transDate_view)
+            self.product_id_entry.insert(0,self.productID_view)
+            self.brand_inv.insert(0,  self.brand_view)
+            self.descrtip_inv_entry.insert('1.0', self.description_view)
+            self.quantity_inv.insert(0, self.quantity_view)
+            self.price_inv.insert(0, self.price_view)
+            self.categoryEntry.insert(0, self.categoryInsert)
+            self.unit_inv.insert(0, self.unitInsert)
+            self.equipment_entry.insert(0, self.equiptment_view)
+            self.widthrawal_entry.insert(0, self.withdral_slpt)
+            self.requestedBy_entry.insert(0, self.requestedBy)
+
+    def update_record(self):
+        """This function is to update record for withdrawal"""
+        from inventory_database import Database # import class from inventory_database.py
+        Database.initialize()
+        dateTime = datetime.now()
+        try:
+            if self.searchID_entry.get():
+                Database.update_widthrawal(transDate=self.trans_date_entry.get(),product_id=self.product_id_entry.get(),
+                                            brand=self.brand_inv.get(),description=self.descrtip_inv_entry.get('1.0', 'end-1c'),
+                                            quantity=self.quantity_inv.get(),price=self.price_inv.get(),
+                                            category=self.categoryEntry.get(),widthrawal_slpt=self.widthrawal_entry.get(),
+                                            requestedBy=self.requestedBy_entry.get(),equipment=self.equipment_entry.get(),
+                                            unit=self.unit_inv.get(),time_updated=dateTime,id=self.searchID_entry.get())
+                messagebox.showinfo("JRS", "Data Has been save!!!")
+                self.clear_inputs() 
+                self.inventory_treeview_display()
+                self.searchID_entry.delete(0, END)
+            else:
+                messagebox.showinfo("Error", "Please fill searcID entry field!!!")
+        except Exception as ex:
+                messagebox.showerror("Error", f"Error due to :{str(ex)}")
+
+    def delete_record(self):
+        """This function is to delete record"""
+        from inventory_database import Database # import class from inventory_database.py
+        Database.initialize()
+
+        try:
+            if self.searchID_entry.get():
+                result = tkMessageBox.askquestion('JRS Software', 'Would you like to Delete record?', icon="warning")
+                if result =='yes':
+                    Database.delete_one_withd_ID(self.searchID_entry.get())
+                    self.inventory_treeview_display()
+            else:
+                messagebox.showinfo("Error", "Please fill searcID entry field!!!")
+        except Exception as ex:
+            messagebox.showerror("Error", f"Error due to :{str(ex)}")
     def inve_category(self):
         """This function is for Displaying inventory category"""
         # from inventory_database import Database

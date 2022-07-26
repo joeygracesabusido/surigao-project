@@ -16,6 +16,7 @@ import datetime as dt
 from datetime import date, datetime
 
 from abc import ABC,abstractmethod
+import babel.numbers
 
 mydb = mysql.connector.connect(
             host="192.46.225.247",
@@ -542,7 +543,7 @@ class Insert_withdrawal(Viewwithdrawal):
         return data
 
 
-#==================================================Inventory Frame=================================================
+#==================================================Purchases Frame=================================================
 
 def inve_category():
     """This function is for Displaying inventory category"""
@@ -572,6 +573,8 @@ class View(ABC):
         pass
     def inventory_treevie_list(self):
         pass
+    def clickBtn_display(self):
+        pass
 
 class insert_inventoryController():
     def __init__(self,view:View):
@@ -588,6 +591,8 @@ class insert_inventoryController():
         self.view.search_inventory()
     def clcik_save_inventoryBtn(self):
         self.view.insertPurchases()
+    def clickBtn_display(self):
+        self.view.inventory_treeview_display()
 
 class Insert_purchasesView(View):
     """This is for insert Inventory View"""
@@ -705,15 +710,18 @@ class Insert_purchasesView(View):
                               font=('arial', 10), width=10, height=1,command=controller.clcik_save_inventoryBtn)
         self.btn_save_purchase.place(x=10, y=350)
 
-        self.inventoryTreeview_form = Frame(self.insert_inventoryFrame, width=700, height=10)
-        self.inventoryTreeview_form.place(x=370, y=40)
+        
 
         # this is for search fields
-
+        self.btn_display = Button(self.insert_inventoryFrame, text='Display', bd=2, bg='blue', fg='white',
+                              font=('arial', 10), width=10, height=1,command=controller.clickBtn_display)
+        self.btn_display.place(x=1100, y=5)
         
 
 
         # This is for Tree view frame for Insert Purchases
+        self.inventoryTreeview_form = Frame(self.insert_inventoryFrame, width=700, height=10)
+        self.inventoryTreeview_form.place(x=370, y=40)
         style = ttk.Style(self.insert_inventoryFrame)
         style.theme_use("clam")
         style.configure("Treeview",
@@ -840,6 +848,7 @@ class Insert_purchasesView(View):
                                     description=description_insert,quantity=quantity_insert,
                                     price=price_insert,date=date_insert,category=categoryInsert,unit=unitInsert)
             messagebox.showinfo('Your data has been Save')
+            self.inventory_treeview_display()
 
             try:
                 Database.update_inventory_onhand(productID_Insert,totalQuantity_update2,dateTime)
@@ -874,7 +883,7 @@ class Insert_purchasesView(View):
                                 self.price_view, self.stockamount_view))
 
     
-
+#================================================inventory on hand Frame===============================================
 class inventoryController():
     def __init__(self,view):
         self.view = view
@@ -970,7 +979,7 @@ class InventoryView():
         self.category_lbl.place(x=10, y=240)
 
         self.categoryEntry = ttk.Combobox(self.inventoryFrame, width=20,font=('Arial', 10))
-        self.categoryEntry['values'] = inve_category()
+        self.categoryEntry['values'] = self.inve_category()
         self.categoryEntry.place(x=150, y=240)
         # self.categoryEntry.bind("<<ComboboxSelected>>", auto_account_num)
 
@@ -979,9 +988,29 @@ class InventoryView():
                               font=('arial', 10), width=10, height=1,command=controller.insert_inventory)
         self.btn_save.place(x=10, y=270)
 
+        # this is for search frame
+
+        self.trans_dateFrom_entry  = DateEntry(self.inventoryFrame, width=15, background='darkblue', date_pattern='yyyy-MM-dd',
+                                    foreground='white', borderwidth=2, padx=10, pady=10)
+        self.trans_dateFrom_entry.place(x=380, y=5)
+        self.trans_dateFrom_entry.configure(justify='center')
+
+        self.trans_date_lbl = Label(self.inventoryFrame, text='TO', width=5, height=1, bg='yellow', fg='black',
+                               font=('Arial', 9), anchor='center')
+        self.trans_date_lbl .place(x=510, y=5)
+
+        self.trans_dateTo_entry  = DateEntry(self.inventoryFrame, width=15, background='darkblue', date_pattern='yyyy-MM-dd',
+                                    foreground='white', borderwidth=2, padx=10, pady=10)
+        self.trans_dateTo_entry.place(x=570, y=5)
+        self.trans_dateTo_entry.configure(justify='center')
+
+        self.categoryEntry_search = ttk.Combobox(self.inventoryFrame, width=20,font=('Arial', 10))
+        self.categoryEntry_search['values'] =self.inve_category()
+        self.categoryEntry_search.place(x=700, y=5)
+
         self.btn_display = Button(self.inventoryFrame, text='Display', bd=2, bg='blue', fg='white',
                               font=('arial', 10), width=10, height=1,command=controller.display_inventory)
-        self.btn_display.place(x=850, y=15)
+        self.btn_display.place(x=975, y=5)
 
 
         self.inventoryTreeview_form = Frame(self.inventoryFrame, width=700, height=10)
@@ -1003,7 +1032,7 @@ class InventoryView():
         
         self.inventoryTreeview = ttk.Treeview(self.inventoryTreeview_form,
                                                 columns=('Product ID','Brand', 'Description','Quantity',
-                                                'Unit','Amount'),
+                                                'Unit','Amount','Running Balance'),
                                                 selectmode="extended", height=20, yscrollcommand=scrollbary.set,
                                                 xscrollcommand=scrollbarx.set)
         scrollbary.config(command=self.inventoryTreeview.yview)
@@ -1016,6 +1045,7 @@ class InventoryView():
         self.inventoryTreeview.heading('Quantity', text="Quantity", anchor=CENTER)
         self.inventoryTreeview.heading('Unit', text="Unit", anchor=CENTER)
         self.inventoryTreeview.heading('Amount', text="Amount", anchor=CENTER)
+        self.inventoryTreeview.heading('Running Balance', text="Running Balance", anchor=CENTER)
          
 
 
@@ -1023,9 +1053,10 @@ class InventoryView():
         self.inventoryTreeview.column('#1', stretch=NO, minwidth=0, width=70, anchor='center')
         self.inventoryTreeview.column('#2', stretch=NO, minwidth=0, width=70, anchor='sw')
         self.inventoryTreeview.column('#3', stretch=NO, minwidth=0, width=150, anchor='sw')
-        self.inventoryTreeview.column('#4', stretch=NO, minwidth=0, width=150, anchor='e')
-        self.inventoryTreeview.column('#5', stretch=NO, minwidth=0, width=100, anchor='e')
+        self.inventoryTreeview.column('#4', stretch=NO, minwidth=0, width=100, anchor='e')
+        self.inventoryTreeview.column('#5', stretch=NO, minwidth=0, width=70, anchor='e')
         self.inventoryTreeview.column('#6', stretch=NO, minwidth=0, width=100, anchor='e')
+        self.inventoryTreeview.column('#7', stretch=NO, minwidth=0, width=115, anchor='e')
         
        
     
@@ -1091,21 +1122,59 @@ class InventoryView():
     def inventory_treevie_list(self):
         """This function is for querying for treeview for inventory Database"""
         from inventory_database import Database
-        Database.initialize()   
+        Database.initialize() 
 
-        myresult = Database.select_all_from_inventoryData()
+        if self.categoryEntry_search.get():
 
-        for i in myresult:
-            self.productID_view = i[1]   
-            self.brand_view = i[2]   
-            self.description_view = i[3]  
-            self.quantity_view = i[4] 
-            self.unit_view = i[6]
-            self.stockamount_view ='{:,.2f}'.format(i[7])
+            myresult = Database.select_all_from_inventoryData_withCategory(self.categoryEntry_search.get())
+            self.Totalstockamount_view = 0
+            for i in myresult:
+                self.productID_view = i[1]   
+                self.brand_view = i[2]   
+                self.description_view = i[3]  
+                self.quantity_view = i[4] 
+                self.unit_view = i[6]
+                self.stockamount_view2 = i[7]
+                self.Totalstockamount_view+= self.stockamount_view2
+                self.Totalstockamount_view2 ='{:,.2f}'.format(self.Totalstockamount_view)
+                self.stockamount_view ='{:,.2f}'.format(i[7])
 
-            self.inventoryTreeview.insert('', 'end', values=(self.productID_view,self.brand_view,
-                                self.description_view,self.quantity_view,self.unit_view,self.stockamount_view))
-               
+                self.inventoryTreeview.insert('', 'end', values=(self.productID_view,self.brand_view,
+                                    self.description_view,self.quantity_view,self.unit_view,self.stockamount_view,
+                                    self.Totalstockamount_view2))
+        else:
+            myresult = Database.select_all_from_inventoryData()
+            self.Totalstockamount_view = 0
+            for i in myresult:
+                self.productID_view = i[1]   
+                self.brand_view = i[2]   
+                self.description_view = i[3]  
+                self.quantity_view = i[4] 
+                self.unit_view = i[6]
+                self.stockamount_view2 = i[7]
+                self.Totalstockamount_view+= self.stockamount_view2
+                self.Totalstockamount_view2 ='{:,.2f}'.format(self.Totalstockamount_view)
+                self.stockamount_view ='{:,.2f}'.format(i[7])
+
+                self.inventoryTreeview.insert('', 'end', values=(self.productID_view,self.brand_view,
+                                    self.description_view,self.quantity_view,self.unit_view,self.stockamount_view,
+                                    self.Totalstockamount_view2))
+    def inve_category(self):
+        """This function is for Displaying inventory category"""
+        # from inventory_database import Database
+        # Database.initialize()
+        # agg_result = Database.select_all_category_from_category()
+        mydb._open_connection()
+        
+        cursor.execute('SELECT category FROM category ORDER by category ASC')
+
+        agg_result = cursor.fetchall()
+
+        data = []
+        for x in agg_result:
+            data.append(x[0])
+        
+        return data
 
 
 #==============================================Cost Analysis Frame ================================================
