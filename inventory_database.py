@@ -132,7 +132,7 @@ class Database(object):
                             price,date,category,unit)
             #                  
             # cursor.execute(data)              
-            cursor.execute(data,(val,)) 
+            cursor.execute(data,val) 
            
         except Exception as ex:
             print("Error", f"Error due to :{str(ex)}")

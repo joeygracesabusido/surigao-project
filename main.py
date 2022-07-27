@@ -1624,7 +1624,7 @@ def dashboard():
 
     filemenu.add_command(label="Logout", command = Logout)
     # filemenu.add_command(label="Exit")
-    filemenu2.add_command(label="Items Registration", command=c.start)
+    filemenu2.add_command(label="Inventory On Hand", command=c.start)
     filemenu2.add_command(label="Add Purchases", command=insert_inventory.start)
     filemenu2.add_command(label="Add Withdrawal", command=insert_withdrawal.start)
    

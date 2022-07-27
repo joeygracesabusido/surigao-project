@@ -410,5 +410,5 @@ class Insert_purchasesView2(View2):
     
         self.root.mainloop()
 
-# c = insert_inventoryController2(Insert_purchasesView2())
-# c.start()
+c = insert_inventoryController2(Insert_purchasesView2())
+c.start()

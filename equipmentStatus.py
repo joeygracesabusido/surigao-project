@@ -29,7 +29,7 @@ cursor = mydb.cursor()
 
 
 
-class Viewwithdrawal(ABC):
+class ViewEquipmentStatus(ABC):
     def setup(self,controller):
         pass
     def clear_inputs(self):
@@ -52,7 +52,7 @@ class Viewwithdrawal(ABC):
         pass
 
 class insert_withdrawalController():
-    def __init__(self,view:Viewwithdrawal):
+    def __init__(self,view:ViewEquipmentStatus):
         self.view = view
 
     def start(self):# this is to start up Invenotry View
@@ -87,7 +87,7 @@ class insert_withdrawalController():
     def clickBtn_delete(self):
         self.view.delete_record()
 
-class Insert_withdrawal(Viewwithdrawal):
+class EquipmentStatus(ViewEquipmentStatus):
     """This is for insert Inventory View"""
     def set_up(self,controller):
         width = 1250
@@ -318,7 +318,6 @@ class Insert_withdrawal(Viewwithdrawal):
        
     
         self.inventoryTreeview.pack()
-        self.inventoryTreeview.bind("<ButtonRelease-1>",self.searchID2())
         
     
     def clear_inputs(self):
@@ -335,7 +334,6 @@ class Insert_withdrawal(Viewwithdrawal):
         self.widthrawal_entry.delete(0, END)
         self.requestedBy_entry.delete(0, END)
         self.trans_date_entry.delete(0, END)
-        # self.searchID_entry.delete(0, END)
         
         
 
@@ -397,33 +395,28 @@ class Insert_withdrawal(Viewwithdrawal):
 
         myresult = Database.select_One_from_inventoryData(productID_Insert)
         totalQuantity_update = 0
-        quantitySearch = 0
         for i in myresult:
             quantitySearch = i[4]
             totalQuantity_update = float(quantitySearch) - float(quantity_insert) 
             totalQuantity_update2 = str(totalQuantity_update)
-
-        if  float(quantitySearch) > 0 and float(quantity_insert) <= float(quantitySearch):
-            if withdral_slpt =='' or requestedBy=='' or productID_Insert =='' or brand_inv_Insert ==''\
-                            or description_insert=='' or quantity_insert=='' or price_insert==''\
-                                or categoryInsert =='' or unitInsert =='' or \
-                                equipmentInsert=='' or transDate_insert=='' :
-                messagebox.showinfo('Please fill up  blank entry field/s ')
-            else:
-                Database.insert_withdrawal_inve(transDate=transDate_insert,product_id=productID_Insert,
-                                        brand=brand_inv_Insert,description=description_insert,
-                                        quantity=quantity_insert,price=price_insert,
-                                        date=date_insert,category=categoryInsert,unit=unitInsert,
-                                        widthrawal_slpt=withdral_slpt,requestedBy=requestedBy,
-                                        equipment=equipmentInsert )
-                messagebox.showinfo('Your data has been Save')
-
-                try:
-                    Database.update_inventory_onhand(productID_Insert,totalQuantity_update2,dateTime)
-                except Exception as ex:
-                    messagebox.showerror("Error", f"Error due to :{str(ex)}")
+        if withdral_slpt =='' or requestedBy=='' or productID_Insert =='' or brand_inv_Insert ==''\
+                        or description_insert=='' or quantity_insert=='' or price_insert==''\
+                            or categoryInsert =='' or unitInsert =='' or equipmentInsert=='':
+            messagebox.showinfo('Please fill up  blank entry field/s ')
         else:
-            messagebox.showinfo('JRS',f'Quantity of {productID_Insert} is less or Equal to Zero(0)')
+            Database.insert_withdrawal_inve(transDate=transDate_insert,product_id=productID_Insert,
+                                    brand=brand_inv_Insert,description=description_insert,
+                                    quantity=quantity_insert,price=price_insert,
+                                    date=date_insert,category=categoryInsert,unit=unitInsert,
+                                    widthrawal_slpt=withdral_slpt,requestedBy=requestedBy,
+                                    equipment=equipmentInsert )
+            messagebox.showinfo('Your data has been Save')
+
+            try:
+                Database.update_inventory_onhand(productID_Insert,totalQuantity_update2,dateTime)
+            except Exception as ex:
+                messagebox.showerror("Error", f"Error due to :{str(ex)}")
+
     def inventory_treeview_display(self):
         self.inventoryTreeview.delete(*self.inventoryTreeview.get_children())
         return self.inventory_treevie_list()
@@ -526,49 +519,6 @@ class Insert_withdrawal(Viewwithdrawal):
             self.widthrawal_entry.insert(0, self.withdral_slpt)
             self.requestedBy_entry.insert(0, self.requestedBy)
 
-    def searchID2(self):
-        """This function is for Searching data using ID as parameter"""
-        from inventory_database import Database # import class from inventory_database.py
-        Database.initialize()
-
-
-        self.clear_inputs()
-        self.selected = self.inventoryTreeview.focus()
-        self.values = self.inventoryTreeview.item(self.selected)
-        self.selectedItems = self.values['values']
-
-        Idsearch = self.searchID_entry.get()
-        # Idsearch = self.selectedItems[1]
-        myresult = Database.search_one_withd_ID(id=Idsearch)
-
-        for i in myresult:
-
-            self.idView = i[0]
-            self.transDate_view = i[1]
-            self.productID_view = i[2]   
-            self.brand_view = i[3]   
-            self.description_view = i[4]  
-            self.quantity_view = i[5] 
-            self.price_view =  i[6]
-            self.categoryInsert = i[8]
-            self.withdral_slpt = i[9]
-            self.requestedBy = i[10]
-            self.equiptment_view = i[11]
-            self.unitInsert = i[12]
-
-            self.searchID_entry.insert(0, self.idView)
-            self.trans_date_entry.insert(0,self.transDate_view)
-            self.product_id_entry.insert(0,self.productID_view)
-            self.brand_inv.insert(0,  self.brand_view)
-            self.descrtip_inv_entry.insert('1.0', self.description_view)
-            self.quantity_inv.insert(0, self.quantity_view)
-            self.price_inv.insert(0, self.price_view)
-            self.categoryEntry.insert(0, self.categoryInsert)
-            self.unit_inv.insert(0, self.unitInsert)
-            self.equipment_entry.insert(0, self.equiptment_view)
-            self.widthrawal_entry.insert(0, self.withdral_slpt)
-            self.requestedBy_entry.insert(0, self.requestedBy)
-
     def update_record(self):
         """This function is to update record for withdrawal"""
         from inventory_database import Database # import class from inventory_database.py
@@ -644,5 +594,5 @@ class Insert_withdrawal(Viewwithdrawal):
     
         self.root.mainloop()
 
-c = insert_withdrawalController(Insert_withdrawal())
-c.start()
+# c = insert_withdrawalController(Insert_withdrawal())
+# c.start()
