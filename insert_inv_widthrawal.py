@@ -423,7 +423,7 @@ class Insert_withdrawal(Viewwithdrawal):
                 except Exception as ex:
                     messagebox.showerror("Error", f"Error due to :{str(ex)}")
         else:
-            messagebox.showinfo('JRS',f'Quantity of {productID_Insert} is less or Equal to Zero(0)')
+            messagebox.showinfo('JRS',f'Quantity of {productID_Insert} is only {quantitySearch} less your Withdrawal ')
     def inventory_treeview_display(self):
         self.inventoryTreeview.delete(*self.inventoryTreeview.get_children())
         return self.inventory_treevie_list()

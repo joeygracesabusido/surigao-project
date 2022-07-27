@@ -167,6 +167,7 @@ class Database(object):
         """
         This function is to update Equipment with parameters of Trans ID
         """
+        Database.DATABASE._open_connection()
         try:
             data = ('UPDATE equipment SET equipment_id=%s,\
                     equipment_name=%s,purchase_price=%s, \
@@ -183,6 +184,94 @@ class Database(object):
             Database.DATABASE.close()
 
 # ================================================Equipment Status Back End========================================
+    @staticmethod
+    def insert_equipmentStatus(equipment_id,status,
+                                date,work_update,
+                                ):
+        """
+        this function is to insert
+        equipmentstatus
+        """ 
+        Database.DATABASE._open_connection()
+        try:
+           
+            data = ( "INSERT INTO equipment_status (equipment_id,status,\
+                                date,work_update)"
+                    "VALUES(%s,%s,%s,%s)")
+            val = (equipment_id,status,date,work_update)
+            #                  
+            # cursor.execute(data)              
+            cursor.execute(data,val) 
+           
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
+    
+    @staticmethod
+    def search_one_equipmentStatus(id):
+        """
+        this function is to query using ID from equipment_status
+        """ 
+        Database.DATABASE._open_connection()
+        try:
+           
+            data = ( "Select * from equipment_status \
+                        Where id = %s")
+            val = (id)
+            #                  
+            # cursor.execute(data)              
+            cursor.execute(data,(val,)) 
+            return cursor.fetchall()
+           
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+
+            
+            Database.DATABASE.close()
+    
+    @staticmethod
+    def update_equipmentStatus(equipment_id,status,
+                                work_update,time_update,id):
+        """This function is for updating record to database"""
+        Database.DATABASE._open_connection()
+        try:
+            data = ("""
+                    UPDATE equipment_status set equipment_id=%s,
+                    status=%s,work_update=%s,time_update=%s
+                    WHERE id = %s
+                    """)
+
+            val = (equipment_id,status,work_update,time_update,id)
+
+            cursor.execute(data,val)
+
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+
+            Database.DATABASE.commit()
+            Database.DATABASE.close()
+
+
+    @staticmethod
+    def select_all_equipmentStatus():
+        """This function si to query all from equipment_status """
+        Database.DATABASE._open_connection()
+        try:
+            data = ('SELECT * FROM equipment_status ')               
+            cursor.execute(data)
+            return cursor.fetchall()
+
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+            
+            Database.DATABASE.close()   
+
 
 
 # Database.initialize()  

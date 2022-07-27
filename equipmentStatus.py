@@ -34,24 +34,19 @@ class ViewEquipmentStatus(ABC):
         pass
     def clear_inputs(self):
         pass
-    def search_inventory(self):
+    def clcik_save_Btn(self):
         pass
-    def insertPurchases(self):
+    def click_save_Btn(self):
         pass
-    def inventory_treeview_display(self):
+    def clickBtn_display(self):
         pass
-    def inventory_treevie_list(self):
-        pass
-    def clear_inputs(self):
-        pass
-    def searchID(self):
+    def clickBtn_Search(self):
         pass
     def clickBtn_update(self):
         pass
-    def clickBtn_delete(self):
-        pass
+   
 
-class insert_withdrawalController():
+class EquipmentStatusController():
     def __init__(self,view:ViewEquipmentStatus):
         self.view = view
 
@@ -64,22 +59,20 @@ class insert_withdrawalController():
         # self.view.inventory_treeview_display()
         # self.inventory_treeview_display()
 
-    def click_inventorySearch(self):
-        # self.view.clear_inputs()
-        self.view.search_inventory()
-    def clcik_save_inventoryBtn(self):
-        self.view.insertPurchases()
-        self.view.inventory_treeview_display()
+    
+    def click_save_Btn(self):
+        self.view.insertdata()
+        
         # self.clear_inputs()
 
     def clickBtn_display(self):
-        self.view.inventory_treeview_display()
+        self.view.mytreeView_display()
 
     def clickBtn_clear(self):
         self.view.clear_inputs()
 
     def clickBtn_Search(self):
-        self.view.searchID()
+        self.view.search_record()
 
     def clickBtn_update(self):
         self.view.update_record()
@@ -93,7 +86,7 @@ class EquipmentStatus(ViewEquipmentStatus):
         width = 1250
         height = 600
         self.root = Tk()
-        self.root.title("Parts Withdrawal")
+        self.root.title("Equipment Status")
        
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
@@ -117,107 +110,53 @@ class EquipmentStatus(ViewEquipmentStatus):
         self.trans_date_entry.place(x=150, y=40)
         self.trans_date_entry.configure(justify='center')
 
+        self.equipment_entry_lbl = Label(self.root, text='Equipment', width=15, height=1, bg='yellow', fg='black',
+                               font=('Arial', 10), anchor='e')
+        self.equipment_entry_lbl .place(x=10, y=70)
 
+        self.equipment_entry_search = ttk.Combobox(self.root, width=20,font=('Arial', 10))
+        self.equipment_entry_search['values'] = self.equipment_list()
+        self.equipment_entry_search.place(x=150, y=70)
+       
 
-        self.productID = Label(self.root, text='Product ID:', width=15, height=1, bg='yellow', fg='black',
+        self.status_lbl = Label(self.root, text='Status:', width=15, height=1, bg='yellow', fg='black',
                           font=('Arial', 10), anchor='e')
-        self.productID.place(x=10, y=105)
+        self.status_lbl.place(x=10, y=105)
 
-    
-        self.product_id_entry = Entry(self.root, width=15, font=('Arial', 10))
-        self.product_id_entry.place(x=150, y=105)
-
-        self.brand_lbl = Label(self.root, text='Brand:', width=15, height=1, bg='yellow', fg='black',
-                          font=('Arial', 10), anchor='e')
-        self.brand_lbl.place(x=10, y=135)
-
-    
-        self.brand_inv = Entry(self.root, width=15, font=('Arial', 10))
-        self.brand_inv.place(x=150, y=135)
+        self.status_entry = ttk.Combobox(self.root, width=20,font=('Arial', 10))
+        self.status_entry['values'] = ('Operational', 'Breakdown')
+        self.status_entry.place(x=150, y=105) 
 
         
 
-        self.description_lbl = Label(self.root, text='Description:', width=15, height=1, bg='yellow', fg='black',
+        self.update_lbl = Label(self.root, text='Work Update', width=15, height=1, bg='yellow', fg='black',
                           font=('Arial', 10), anchor='e')
-        self.description_lbl.place(x=10, y=165)
+        self.update_lbl.place(x=10, y=135)
 
-        self.descrtip_inv_entry = scrolledtext.ScrolledText(self.root,
+        self.work_update_entry = scrolledtext.ScrolledText(self.root,
                                                           wrap=tk.WORD,
                                                           width=23,
                                                           height=3,
                                                           font=("Arial",
                                                                 10))
-        self.descrtip_inv_entry.place(x=150, y=165)
+        self.work_update_entry.place(x=150, y=135)
 
-        self.quanity_lbl = Label(self.root, text='Quantity:', width=15, height=1, bg='yellow', fg='black',
-                          font=('Arial', 10), anchor='e')
-        self.quanity_lbl.place(x=10, y=225)
+      
 
-        self.quantity_inv = Entry(self.root, width=15, font=('Arial', 10))
-        self.quantity_inv.place(x=150, y=225)
 
-        self.price_lbl = Label(self.root, text='Price:', width=15, height=1, bg='yellow', fg='black',
-                          font=('Arial', 10), anchor='e')
-        self.price_lbl.place(x=10, y=255)
-
-        self.price_inv = Entry(self.root, width=15, font=('Arial', 10))
-        self.price_inv.place(x=150, y=255)
-
-        self.unit_lbl = Label(self.root, text='Unit:', width=15, height=1, bg='yellow', fg='black',
-                          font=('Arial', 10), anchor='e')
-        self.unit_lbl.place(x=10, y=285)
-
-        self.unit_inv = Entry(self.root, width=15, font=('Arial', 10))
-        self.unit_inv.place(x=150, y=285)
-
-        self.category_lbl = Label(self.root, text='Category:', width=15, height=1, bg='yellow', fg='black',
-                          font=('Arial', 10), anchor='e')
-        self.category_lbl.place(x=10, y=315)
-
-        self.categoryEntry = ttk.Combobox(self.root, width=20,font=('Arial', 10))
-        self.categoryEntry['values'] = self.inve_category()
-        self.categoryEntry.place(x=150, y=315)
         
-        
-        self.request_lbl = Label(self.root, text='Withdral Form No.:', width=15, height=1, bg='yellow', fg='black',
-                          font=('Arial', 10), anchor='e')
-        self.request_lbl.place(x=10, y=345)
-
-    
-        self.widthrawal_entry = Entry(self.root, width=15, font=('Arial', 10))
-        self.widthrawal_entry.place(x=150, y=345)
-
-        self.requestedBy_lbl = Label(self.root, text='Requested By:', width=15, height=1, bg='yellow', fg='black',
-                          font=('Arial', 10), anchor='e')
-        self.requestedBy_lbl.place(x=10, y=375)
-        self.requestedBy_entry = Entry(self.root, width=25, font=('Arial', 10))
-        self.requestedBy_entry.place(x=150, y=375)
-
-
-        self.equipment_lbl = Label(self.root, text='Equipment:', width=15, height=1, bg='yellow', fg='black',
-                          font=('Arial', 10), anchor='e')
-        self.equipment_lbl.place(x=10, y=405)
-
-        self.equipment_entry = ttk.Combobox(self.root, width=20,font=('Arial', 10))
-        self.equipment_entry['values'] = self.equipment_list()
-        self.equipment_entry.place(x=150, y=405)
-
-
-        self.btn_search = Button(self.root, text='Search', bd=2, bg='blue', fg='white',
-                              font=('arial', 10), width=10, height=1,command=controller.click_inventorySearch)
-        self.btn_search.place(x=270, y=105)
 
         self.btn_save_purchase = Button(self.root, text='Save', bd=2, bg='blue', fg='white',
-                              font=('arial', 10), width=10, height=1,command=controller.clcik_save_inventoryBtn)
-        self.btn_save_purchase.place(x=10, y=475)
+                              font=('arial', 10), width=10, height=1,command=controller.click_save_Btn)
+        self.btn_save_purchase.place(x=10, y=200)
 
         self.btn_update = Button(self.root, text='Update', bd=2, bg='gray', fg='white',
                               font=('arial', 10), width=10, height=1,command=controller.clickBtn_update)
-        self.btn_update.place(x=110, y=475)
+        self.btn_update.place(x=110, y=200)
 
-        self.btn_delete = Button(self.root, text='Delete', bd=2, bg='red', fg='white',
-                              font=('arial', 10), width=10, height=1,command=controller.clickBtn_delete)
-        self.btn_delete.place(x=210, y=475)
+        # self.btn_delete = Button(self.root, text='Delete', bd=2, bg='red', fg='white',
+        #                       font=('arial', 10), width=10, height=1,command=controller.clickBtn_delete)
+        # self.btn_delete.place(x=210, y=475)
 
     # this is for searching frame 
 
@@ -236,35 +175,32 @@ class EquipmentStatus(ViewEquipmentStatus):
         self.dateTo.configure(justify='center')
 
 
-        self.equipment_entry_search = ttk.Combobox(self.root, width=20,font=('Arial', 10))
-        self.equipment_entry_search['values'] = self.equipment_list()
-        self.equipment_entry_search.place(x=725, y=5)
+        
 
         self.btn_display = Button(self.root, text='Display', bd=2, bg='blue', fg='white',
                               font=('arial', 10), width=10, height=1,command=controller.clickBtn_display)
         self.btn_display.place(x=950, y=5)
 
-        # self.thread = Thread(target=self.inventory_treevie_list)
-        # self.thread.start()
+      
 
         
 
         # this is for search fields
 
         self.searchID_entry = Entry(self.root, width=15, font=('Arial', 10))
-        self.searchID_entry.place(x=10, y=535)
+        self.searchID_entry.place(x=10, y=435)
 
         self.btn_searchID = Button(self.root, text='Search ID', bd=2, bg='orange', fg='white',
                               font=('arial', 10), width=10, height=1,command=controller.clickBtn_Search)
-        self.btn_searchID.place(x=130, y=535)
+        self.btn_searchID.place(x=130, y=435)
 
         
 
 
         # This is for Tree view frame for Insert Purchases
 
-        self.inventoryTreeview_form = Frame(self.root, width=700, height=20)
-        self.inventoryTreeview_form.place(x=370, y=40)
+        self.myTreeView_form = Frame(self.root, width=700, height=20)
+        self.myTreeView_form.place(x=370, y=50)
         
         style = ttk.Style(self.root)
         style.theme_use("clam")
@@ -277,211 +213,141 @@ class EquipmentStatus(ViewEquipmentStatus):
         
         
         
-        scrollbarx = Scrollbar(self.inventoryTreeview_form, orient=HORIZONTAL)
-        scrollbary = Scrollbar(self.inventoryTreeview_form, orient=VERTICAL)
+        scrollbarx = Scrollbar(self.myTreeView_form, orient=HORIZONTAL)
+        scrollbary = Scrollbar(self.myTreeView_form, orient=VERTICAL)
         
-        self.inventoryTreeview = ttk.Treeview(self.inventoryTreeview_form,
-                                                columns=('ID','Date','Product ID','Brand',
-                                                 'Description','Quantity','Price','Amount','Balance',
-                                                 'Equipment'),
+        self.myTreeview = ttk.Treeview(self.myTreeView_form,
+                                                columns=('Count','ID','Date','Equipment','Status',
+                                                 'WorUpdate'),
                                                 selectmode="extended", height=25, yscrollcommand=scrollbary.set,
                                                 xscrollcommand=scrollbarx.set)
-        scrollbary.config(command=self.inventoryTreeview.yview)
+        scrollbary.config(command=self.myTreeview.yview)
         scrollbary.pack(side=RIGHT, fill=Y)
-        scrollbarx.config(command=self.inventoryTreeview.xview)
+        scrollbarx.config(command=self.myTreeview.xview)
         scrollbarx.pack(side=BOTTOM, fill=X)
-        self.inventoryTreeview.heading('ID', text="ID", anchor=CENTER)
-        self.inventoryTreeview.heading('Date', text="Date", anchor=CENTER)
-        self.inventoryTreeview.heading('Product ID', text="Product ID", anchor=CENTER)
-        self.inventoryTreeview.heading('Brand', text="Brand", anchor=CENTER)
-        self.inventoryTreeview.heading('Description', text="Descrtiption", anchor=CENTER)
-        self.inventoryTreeview.heading('Quantity', text="Quantity", anchor=CENTER)
-        self.inventoryTreeview.heading('Price', text="Price", anchor=CENTER)
-        self.inventoryTreeview.heading('Amount', text="Amount", anchor=CENTER)
-        self.inventoryTreeview.heading('Balance', text="Balance", anchor=CENTER)
-        self.inventoryTreeview.heading('Equipment', text="Equipment", anchor=CENTER)
+        self.myTreeview.heading('Count', text="Count", anchor=CENTER)
+        self.myTreeview.heading('ID', text="ID", anchor=CENTER)
+        self.myTreeview.heading('Date', text="Date", anchor=CENTER)
+        self.myTreeview.heading('Equipment', text="Equipment", anchor=CENTER)
+        self.myTreeview.heading('Status', text="Status", anchor=CENTER)
+        self.myTreeview.heading('WorUpdate', text="Descrtiption", anchor=CENTER)
+        
         
 
 
-        self.inventoryTreeview.column('#0', stretch=NO, minwidth=0, width=0, anchor='e')
-        self.inventoryTreeview.column('#1', stretch=NO, minwidth=0, width=70, anchor='center')
-        self.inventoryTreeview.column('#2', stretch=NO, minwidth=0, width=80, anchor='sw')
-        self.inventoryTreeview.column('#3', stretch=NO, minwidth=0, width=125, anchor='sw')
-        self.inventoryTreeview.column('#4', stretch=NO, minwidth=0, width=125, anchor='e')
-        self.inventoryTreeview.column('#5', stretch=NO, minwidth=0, width=75, anchor='e')
-        self.inventoryTreeview.column('#6', stretch=NO, minwidth=0, width=75, anchor='e')
-        self.inventoryTreeview.column('#7', stretch=NO, minwidth=0, width=70, anchor='e')
-        self.inventoryTreeview.column('#8', stretch=NO, minwidth=0, width=70, anchor='e')
-        self.inventoryTreeview.column('#9', stretch=NO, minwidth=0, width=70, anchor='e')
-        self.inventoryTreeview.column('#10', stretch=NO, minwidth=0, width=80, anchor='e')
+        self.myTreeview.column('#0', stretch=NO, minwidth=0, width=0, anchor='e')
+        self.myTreeview.column('#1', stretch=NO, minwidth=0, width=70, anchor='center')
+        self.myTreeview.column('#2', stretch=NO, minwidth=0, width=100, anchor='sw')
+        self.myTreeview.column('#3', stretch=NO, minwidth=0, width=100, anchor='sw')
+        self.myTreeview.column('#4', stretch=NO, minwidth=0, width=100, anchor='e')
+        self.myTreeview.column('#5', stretch=NO, minwidth=0, width=100, anchor='e')
+        self.myTreeview.column('#6', stretch=NO, minwidth=0, width=350, anchor='e')
+        
         
        
     
-        self.inventoryTreeview.pack()
+        self.myTreeview.pack()
         
     
     def clear_inputs(self):
         """This is to clear input fields"""
        
-        self.product_id_entry.delete(0, END)
-        self.quantity_inv.delete(0, END)
-        self.brand_inv.delete(0, END)
-        self.descrtip_inv_entry.delete('1.0', END)
-        self.price_inv.delete(0, END)
-        self.categoryEntry.delete(0, END)
-        self.unit_inv.delete(0, END)
-        self.equipment_entry.delete(0, END)
-        self.widthrawal_entry.delete(0, END)
-        self.requestedBy_entry.delete(0, END)
         self.trans_date_entry.delete(0, END)
+        self.equipment_entry_search.delete(0, END)
+        self.status_entry.delete(0, END)
+        self.work_update_entry.delete('1.0', END)
+        self.searchID_entry.delete(0, END)
+        
         
         
 
-    def search_inventory(self):
+    def search_record(self):
         """This is to search invenotry using product ID"""
-        from inventory_database import Database
+        from equipment_database import Database
         Database.initialize()
+        
+        self.selected = self.myTreeview.focus()
+        self.values = self.myTreeview.item(self.selected)
+        self.selectedItems = self.values['values']
 
-        self.productId_search = self.product_id_entry.get()
-        myresult = Database.select_One_from_inventoryData(product_id=self.product_id_entry.get())
+        
+        myresult = Database.search_one_equipmentStatus(id=self.selectedItems[1])
+        
 
         for i in myresult:
-            self.productIdSearch = i[1]
-            self.brandSearch = i[2]
-            self.descriptionSearch = i[3]
-            self.priceSearch = i[5]
-            self.unit_invSearch = i[6]
-            self.categorySearch = i[8]
+            self.idView = i[0]
+            self.equipment_view = i[1]
+            self.status_view = i[2] 
+            self.Date_view = i[3]  
+            self.workupdate_view = i[4]
+         
             
 
-            self.product_id_entry.delete(0, END)
-            self.product_id_entry.insert(0, (self.productIdSearch))
+            self.clear_inputs()
+            self.trans_date_entry.insert(0, (self.Date_view))
+            self.equipment_entry_search.insert(0, (self.equipment_view))
+            self.work_update_entry.insert('1.0',(self.workupdate_view))
+            self.status_entry.insert(0, (self.status_view))
+            self.searchID_entry.insert(0, self.idView)
 
-            self.brand_inv.delete(0, END)
-            self.brand_inv.insert(0, (self.brandSearch))
-
-            self.descrtip_inv_entry.delete('1.0', END)
-            self.descrtip_inv_entry.insert('1.0',(self.descriptionSearch))
-
-            self.unit_inv.delete(0, END)
-            self.unit_inv.insert(0, (self.unit_invSearch))
-
-            self.categoryEntry.delete(0, END)
-            self.categoryEntry.insert(0,(self.categorySearch))
-
-
-            self.price_inv.delete(0, END)
-            self.price_inv.insert(0,(self.priceSearch))
-
-    def insertPurchases(self):
+           
+    def insertdata(self):
         """This function is for inserting data to purchases Table using Front End"""
         
-        from inventory_database import Database
+        from equipment_database import Database
         Database.initialize()
         today = date.today()
         dateTime = datetime.now()
+
         transDate_insert = self.trans_date_entry.get()
-        withdral_slpt = self.widthrawal_entry.get()
-        requestedBy = self.requestedBy_entry.get()
-        productID_Insert = self.product_id_entry.get()
-        brand_inv_Insert = self.brand_inv.get()
-        description_insert = self.descrtip_inv_entry.get('1.0', 'end-1c')
-        quantity_insert = self.quantity_inv.get()
-        price_insert = self.price_inv.get()
-        categoryInsert = self.categoryEntry.get()
-        unitInsert = self.unit_inv.get()
-        equipmentInsert = self. equipment_entry.get()
+        equipmentInsert = self.equipment_entry_search.get()
+        statusInsert = self.status_entry.get()
+        workUpdateInsert = self.work_update_entry.get('1.0', 'end-1c')
+
+        print(transDate_insert,equipmentInsert,statusInsert,workUpdateInsert)
+
         date_insert = today
 
-        myresult = Database.select_One_from_inventoryData(productID_Insert)
-        totalQuantity_update = 0
-        for i in myresult:
-            quantitySearch = i[4]
-            totalQuantity_update = float(quantitySearch) - float(quantity_insert) 
-            totalQuantity_update2 = str(totalQuantity_update)
-        if withdral_slpt =='' or requestedBy=='' or productID_Insert =='' or brand_inv_Insert ==''\
-                        or description_insert=='' or quantity_insert=='' or price_insert==''\
-                            or categoryInsert =='' or unitInsert =='' or equipmentInsert=='':
+       
+        if transDate_insert =='' or equipmentInsert=='' or statusInsert =='' or workUpdateInsert =='':
+                       
             messagebox.showinfo('Please fill up  blank entry field/s ')
         else:
-            Database.insert_withdrawal_inve(transDate=transDate_insert,product_id=productID_Insert,
-                                    brand=brand_inv_Insert,description=description_insert,
-                                    quantity=quantity_insert,price=price_insert,
-                                    date=date_insert,category=categoryInsert,unit=unitInsert,
-                                    widthrawal_slpt=withdral_slpt,requestedBy=requestedBy,
-                                    equipment=equipmentInsert )
+            Database.insert_equipmentStatus(equipment_id=equipmentInsert,status=statusInsert,
+                                            date=transDate_insert,work_update=workUpdateInsert)
             messagebox.showinfo('Your data has been Save')
+            self.mytreeView_display()
 
-            try:
-                Database.update_inventory_onhand(productID_Insert,totalQuantity_update2,dateTime)
-            except Exception as ex:
-                messagebox.showerror("Error", f"Error due to :{str(ex)}")
+           
 
-    def inventory_treeview_display(self):
-        self.inventoryTreeview.delete(*self.inventoryTreeview.get_children())
-        return self.inventory_treevie_list()
+    def mytreeView_display(self):
+        self.myTreeview.delete(*self.myTreeview.get_children())
+        return self.mytreeView_list()
 
-    def inventory_treevie_list(self):
+    def mytreeView_list(self):
         """This function is for querying for treeview for inventory Database"""
-        from inventory_database import Database
+        from equipment_database import Database
         Database.initialize()  
 
-        if  self.equipment_entry_search.get() =='' :
+        
 
-            myresult = Database.select_all_withdrawal(dateFrom=self.dateFrom.get(),dateTo=self.dateTo.get())
+        myresult = Database.select_all_equipmentStatus()
+        self.count = 0
+        for i in myresult:
+            self.count1 = 0
+            self.count+=1
+            self.idView = i[0]
+            self.equipment_view = i[1]
+            self.status_view = i[2]   
+            self.workupdate_view = i[4] 
+            self.date_update = i[5]  
+           
+        
 
-            self.Totalstockamount_view = 0
-            for i in myresult:
-                self.idView = i[0]
-                self.transDate_view = i[1]
-                self.productID_view = i[2]   
-                self.brand_view = i[3]   
-                self.description_view = i[4]  
-                self.quantity_view = i[5] 
-                self.price_view =  '{:,.2f}'.format(i[6])
-                self.Totalstockamount_view2 = i[7]
-                self.Totalstockamount_view+=self.Totalstockamount_view2
-                self.Totalstockamount_view3 = '{:,.2f}'.format(self.Totalstockamount_view)
-                self.stockamount_view = '{:,.2f}'.format(i[7])
-                self.equiptment_view = i[11]
-                
-            
+            self.myTreeview.insert('', 'end', values=(self.count,self.idView,self.date_update,self.equipment_view,
+                                    self.status_view,self.workupdate_view,))
 
-                self.inventoryTreeview.insert('', 'end', values=(self.idView,self.transDate_view,
-                                        self.productID_view,self.brand_view,
-                                    self.description_view,self.quantity_view,
-                                    self.price_view, self.stockamount_view,
-                                    self.Totalstockamount_view3,self.equiptment_view))
-
-        elif self.equipment_entry_search.get()!='' and self.dateFrom.get() !='' and self.dateTo.get() !='':
-
-            myresult = Database.select_with_parameters_Date_equipment(equipment=self.equipment_entry_search.get(),
-                                                        datefrom=self.dateFrom.get(),dateto=self.dateTo.get())
-
-            self.Totalstockamount_view = 0
-            for i in myresult:
-                self.idView = i[0]
-                self.transDate_view = i[1]
-                self.productID_view = i[2]   
-                self.brand_view = i[3]   
-                self.description_view = i[4]  
-                self.quantity_view = i[5] 
-                self.price_view =  '{:,.2f}'.format(i[6])
-                self.Totalstockamount_view2 = i[7]
-                self.Totalstockamount_view+=self.Totalstockamount_view2
-                self.Totalstockamount_view3 = '{:,.2f}'.format(self.Totalstockamount_view)
-                self.stockamount_view = '{:,.2f}'.format(i[7])
-                self.equiptment_view = i[11]
-              
-                
-            
-
-                self.inventoryTreeview.insert('', 'end', values=(self.idView,self.transDate_view,
-                                        self.productID_view,self.brand_view,
-                                    self.description_view,self.quantity_view,
-                                    self.price_view, self.stockamount_view,
-                                    self.Totalstockamount_view3,self.equiptment_view))
-
+       
     def searchID(self):
         """This function is for Searching data using ID as parameter"""
         from inventory_database import Database # import class from inventory_database.py
@@ -521,20 +387,24 @@ class EquipmentStatus(ViewEquipmentStatus):
 
     def update_record(self):
         """This function is to update record for withdrawal"""
-        from inventory_database import Database # import class from inventory_database.py
+        from equipment_database import Database# import class from equipment_database.py
         Database.initialize()
         dateTime = datetime.now()
+
+        transDate_insert = self.trans_date_entry.get()
+        equipmentInsert = self.equipment_entry_search.get()
+        statusInsert = self.status_entry.get()
+        workUpdateInsert = self.work_update_entry.get('1.0', 'end-1c')
+        searchID = self.searchID_entry.get()
         try:
             if self.searchID_entry.get():
-                Database.update_widthrawal(transDate=self.trans_date_entry.get(),product_id=self.product_id_entry.get(),
-                                            brand=self.brand_inv.get(),description=self.descrtip_inv_entry.get('1.0', 'end-1c'),
-                                            quantity=self.quantity_inv.get(),price=self.price_inv.get(),
-                                            category=self.categoryEntry.get(),widthrawal_slpt=self.widthrawal_entry.get(),
-                                            requestedBy=self.requestedBy_entry.get(),equipment=self.equipment_entry.get(),
-                                            unit=self.unit_inv.get(),time_updated=dateTime,id=self.searchID_entry.get())
+                Database.update_equipmentStatus(equipment_id=equipmentInsert,status=statusInsert,
+                                                work_update=workUpdateInsert,time_update=dateTime,id=searchID)
+
                 messagebox.showinfo("JRS", "Data Has been save!!!")
+
                 self.clear_inputs() 
-                self.inventory_treeview_display()
+                self.mytreeView_display()
                 self.searchID_entry.delete(0, END)
             else:
                 messagebox.showinfo("Error", "Please fill searcID entry field!!!")
@@ -556,23 +426,7 @@ class EquipmentStatus(ViewEquipmentStatus):
                 messagebox.showinfo("Error", "Please fill searcID entry field!!!")
         except Exception as ex:
             messagebox.showerror("Error", f"Error due to :{str(ex)}")
-    def inve_category(self):
-        """This function is for Displaying inventory category"""
-        # from inventory_database import Database
-        # Database.initialize()
-        # agg_result = Database.select_all_category_from_category()
-        mydb._open_connection()
-        
-        cursor.execute('SELECT category FROM category ORDER by category ASC')
-
-        agg_result = cursor.fetchall()
-
-        data = []
-        for x in agg_result:
-            data.append(x[0])
-        
-        return data
-
+   
     def equipment_list(self):
         """This function is for Displaying inventory category"""
         # from inventory_database import Database
@@ -594,5 +448,5 @@ class EquipmentStatus(ViewEquipmentStatus):
     
         self.root.mainloop()
 
-# c = insert_withdrawalController(Insert_withdrawal())
-# c.start()
+c = EquipmentStatusController(EquipmentStatus())
+c.start()
