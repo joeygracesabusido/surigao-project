@@ -17,39 +17,39 @@ class Database(object):
         global cursor
         cursor = Database.DATABASE.cursor()
 
-        try: 
-            cursor.execute(
-                    "CREATE TABLE IF NOT EXISTS equipment (id INT AUTO_INCREMENT PRIMARY KEY,\
-                            equipment_id VARCHAR(100),\
-                                equipment_name VARCHAR(100), \
-                                    purchase_price VARCHAR(100), \
-                                        chases_number VARCHAR(100),\
-                                            plate_number VARCHAR(50),\
-                                                date_purchase date DEFAULT NULL, \
-                                               UNIQUE (equipment_id))ENGINE = InnoDB;")
-        except Exception as ex:
-            print("Error", f"Error due to :{str(ex)}")
-        finally:
-            Database.DATABASE.commit()
-            Database.DATABASE.close()
-        Database.DATABASE._open_connection()
-        try: 
-            cursor.execute(
-                    """CREATE TABLE IF NOT EXISTS equipment_status (id INT AUTO_INCREMENT PRIMARY KEY,
-                            equipment_id VARCHAR(100),
-                            status VARCHAR(100), 
-                            date date DEFAULT NULL,
-                            work_update VARCHAR(350),
-                            time_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                            INDEX (equipment_id), 
-                            CONSTRAINT FK_equipmentStatus FOREIGN KEY (equipment_id) 
-                            REFERENCES equipment(equipment_id) ON UPDATE CASCADE ON DELETE CASCADE,
-                            UNIQUE (equipment_id))ENGINE = InnoDB;""")
-        except Exception as ex:
-            print("Error", f"Error due to :{str(ex)}")
-        finally:
-            Database.DATABASE.commit()
-            Database.DATABASE.close()
+        # try: 
+        #     cursor.execute(
+        #             "CREATE TABLE IF NOT EXISTS equipment (id INT AUTO_INCREMENT PRIMARY KEY,\
+        #                     equipment_id VARCHAR(100),\
+        #                         equipment_name VARCHAR(100), \
+        #                             purchase_price VARCHAR(100), \
+        #                                 chases_number VARCHAR(100),\
+        #                                     plate_number VARCHAR(50),\
+        #                                         date_purchase date DEFAULT NULL, \
+        #                                        UNIQUE (equipment_id))ENGINE = InnoDB;")
+        # except Exception as ex:
+        #     print("Error", f"Error due to :{str(ex)}")
+        # finally:
+        #     Database.DATABASE.commit()
+        #     Database.DATABASE.close()
+        # Database.DATABASE._open_connection()
+        # try: 
+        #     cursor.execute(
+        #             """CREATE TABLE IF NOT EXISTS equipment_status (id INT AUTO_INCREMENT PRIMARY KEY,
+        #                     equipment_id VARCHAR(100),
+        #                     status VARCHAR(100), 
+        #                     date date DEFAULT NULL,
+        #                     work_update VARCHAR(350),
+        #                     time_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        #                     INDEX (equipment_id), 
+        #                     CONSTRAINT FK_equipmentStatus FOREIGN KEY (equipment_id) 
+        #                     REFERENCES equipment(equipment_id) ON UPDATE CASCADE ON DELETE CASCADE,
+        #                     UNIQUE (equipment_id))ENGINE = InnoDB;""")
+        # except Exception as ex:
+        #     print("Error", f"Error due to :{str(ex)}")
+        # finally:
+        #     Database.DATABASE.commit()
+        #     Database.DATABASE.close()
     @staticmethod
     def insert_equipment(equipmentID,equipment_name,
                                 purchase_price,chases_number,
@@ -263,6 +263,21 @@ class Database(object):
         Database.DATABASE._open_connection()
         try:
             data = ('SELECT * FROM equipment_status ')               
+            cursor.execute(data)
+            return cursor.fetchall()
+
+        except Exception as ex:
+            print("Error", f"Error due to :{str(ex)}")
+        finally:
+            
+            Database.DATABASE.close()   
+
+    @staticmethod
+    def select_status_equipmentStatus(status):
+        """This function si to query all from equipment_status """
+        Database.DATABASE._open_connection()
+        try:
+            data = ('SELECT * FROM equipment_status  where status = "'+status+'" ')               
             cursor.execute(data)
             return cursor.fetchall()
 

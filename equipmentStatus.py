@@ -160,26 +160,32 @@ class EquipmentStatus(ViewEquipmentStatus):
 
     # this is for searching frame 
 
-        self.dateFrom  = DateEntry(self.root, width=15, background='darkblue', date_pattern='yyyy-MM-dd',
-                                    foreground='white', borderwidth=2, padx=10, pady=10)
-        self.dateFrom.place(x=370, y=5)
-        self.dateFrom.configure(justify='center')
+        # self.dateFrom  = DateEntry(self.root, width=15, background='darkblue', date_pattern='yyyy-MM-dd',
+        #                             foreground='white', borderwidth=2, padx=10, pady=10)
+        # self.dateFrom.place(x=370, y=5)
+        # self.dateFrom.configure(justify='center')
 
-        self.to_lbl = Label(self.root, text='To:', width=7, height=1, bg='yellow', fg='black',
+        # self.to_lbl = Label(self.root, text='To:', width=7, height=1, bg='yellow', fg='black',
+        #                   font=('Arial', 10), anchor='e')
+        # self.to_lbl.place(x=500, y=5)
+
+        # self.dateTo  = DateEntry(self.root, width=15, background='darkblue', date_pattern='yyyy-MM-dd',
+        #                             foreground='white', borderwidth=2, padx=10, pady=10)
+        # self.dateTo.place(x=575, y=5)
+        # self.dateTo.configure(justify='center')
+
+        self.to_lbl = Label(self.root, text='Equipment Status:', width=15, height=1, bg='yellow', fg='black',
                           font=('Arial', 10), anchor='e')
-        self.to_lbl.place(x=500, y=5)
+        self.to_lbl.place(x=600, y=7)
 
-        self.dateTo  = DateEntry(self.root, width=15, background='darkblue', date_pattern='yyyy-MM-dd',
-                                    foreground='white', borderwidth=2, padx=10, pady=10)
-        self.dateTo.place(x=575, y=5)
-        self.dateTo.configure(justify='center')
-
-
+        self.status_entry_search = ttk.Combobox(self.root, width=25,font=('Arial', 10))
+        self.status_entry_search['values'] = ('Operational', 'Breakdown')
+        self.status_entry_search.place(x=750, y=7)
         
 
         self.btn_display = Button(self.root, text='Display', bd=2, bg='blue', fg='white',
                               font=('arial', 10), width=10, height=1,command=controller.clickBtn_display)
-        self.btn_display.place(x=950, y=5)
+        self.btn_display.place(x=950, y=7)
 
       
 
@@ -230,7 +236,7 @@ class EquipmentStatus(ViewEquipmentStatus):
         self.myTreeview.heading('Date', text="Date", anchor=CENTER)
         self.myTreeview.heading('Equipment', text="Equipment", anchor=CENTER)
         self.myTreeview.heading('Status', text="Status", anchor=CENTER)
-        self.myTreeview.heading('WorUpdate', text="Descrtiption", anchor=CENTER)
+        self.myTreeview.heading('WorUpdate', text="Work Update", anchor=CENTER)
         
         
 
@@ -328,25 +334,43 @@ class EquipmentStatus(ViewEquipmentStatus):
         """This function is for querying for treeview for inventory Database"""
         from equipment_database import Database
         Database.initialize()  
+      
 
-        
+        if self.status_entry_search.get():
+            myresult = Database.select_status_equipmentStatus(status=self.status_entry_search.get())
+            
+            self.count = 0
+            for i in myresult:
+                self.count1 = 0
+                self.count+=1
+                self.idView = i[0]
+                self.equipment_view = i[1]
+                self.status_view = i[2]   
+                self.workupdate_view = i[4] 
+                self.date_update = i[5]  
+            
+            
 
-        myresult = Database.select_all_equipmentStatus()
-        self.count = 0
-        for i in myresult:
-            self.count1 = 0
-            self.count+=1
-            self.idView = i[0]
-            self.equipment_view = i[1]
-            self.status_view = i[2]   
-            self.workupdate_view = i[4] 
-            self.date_update = i[5]  
-           
-        
+                self.myTreeview.insert('', 'end', values=(self.count,self.idView,self.date_update,self.equipment_view,
+                                        self.status_view,self.workupdate_view,))
 
-            self.myTreeview.insert('', 'end', values=(self.count,self.idView,self.date_update,self.equipment_view,
-                                    self.status_view,self.workupdate_view,))
+        else:
 
+            myresult = Database.select_all_equipmentStatus()
+            self.count = 0
+            for i in myresult:
+                self.count1 = 0
+                self.count+=1
+                self.idView = i[0]
+                self.equipment_view = i[1]
+                self.status_view = i[2]   
+                self.workupdate_view = i[4] 
+                self.date_update = i[5]  
+            
+            
+
+                self.myTreeview.insert('', 'end', values=(self.count,self.idView,self.date_update,self.equipment_view,
+                                        self.status_view,self.workupdate_view,))
        
     def searchID(self):
         """This function is for Searching data using ID as parameter"""
@@ -448,5 +472,5 @@ class EquipmentStatus(ViewEquipmentStatus):
     
         self.root.mainloop()
 
-c = EquipmentStatusController(EquipmentStatus())
-c.start()
+# c = EquipmentStatusController(EquipmentStatus())
+# c.start()
